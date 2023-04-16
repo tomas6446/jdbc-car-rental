@@ -17,7 +17,7 @@ public class ReservationRepository extends BaseRepository<Reservation> {
         this.reservationMapper = reservationMapper;
     }
 
-    public List<Reservation> getAllCustomers() {
+    public List<Reservation> getAllReservations() {
         String query = "SELECT * FROM reservation";
         return executeQuery(query, reservationMapper::mapRow);
     }

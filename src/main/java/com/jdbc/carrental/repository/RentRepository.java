@@ -17,7 +17,7 @@ public class RentRepository extends BaseRepository<Rent> {
         this.rentMapper = rentMapper;
     }
 
-    public List<Rent> getAllCustomers() {
+    public List<Rent> getAllRents() {
         String query = "SELECT * FROM rent";
         return executeQuery(query, rentMapper::mapRow);
     }

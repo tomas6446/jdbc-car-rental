@@ -18,7 +18,7 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     public List<Customer> getAllCustomers() {
-        String query = "SELECT * FROM users";
+        String query = "SELECT * FROM customer";
         return executeQuery(query, customerMapper::mapRow);
     }
 }

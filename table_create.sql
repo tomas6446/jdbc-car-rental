@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Rent
     customer_id INT NOT NULL,
     rent_date   DATE,
     return_date DATE,
-    amount_paid DECIMAL(10, 2)
+    amount_paid DECIMAL(10, 2) DEFAULT 0.00
 );
 
 CREATE TABLE IF NOT EXISTS Reservation
