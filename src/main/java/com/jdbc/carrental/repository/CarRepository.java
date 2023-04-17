@@ -16,9 +16,29 @@ public class CarRepository extends BaseRepository<Car> {
         super(databaseConnection);
         this.carMapper = carMapper;
     }
-
-    public List<Car> getAllCars() {
+    @Override
+    public List<Car> getAll() {
         String query = "SELECT * FROM car";
         return executeQuery(query, carMapper::mapRow);
+    }
+
+    @Override
+    public void enter() {
+
+    }
+
+    @Override
+    public void search() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void delete() {
+
     }
 }

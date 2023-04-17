@@ -16,9 +16,29 @@ public class RentRepository extends BaseRepository<Rent> {
         super(databaseConnection);
         this.rentMapper = rentMapper;
     }
-
-    public List<Rent> getAllRents() {
+    @Override
+    public List<Rent> getAll() {
         String query = "SELECT * FROM rent";
         return executeQuery(query, rentMapper::mapRow);
+    }
+
+    @Override
+    public void enter() {
+
+    }
+
+    @Override
+    public void search() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void delete() {
+
     }
 }

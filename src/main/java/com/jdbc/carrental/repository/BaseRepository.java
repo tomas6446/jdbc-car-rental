@@ -34,4 +34,14 @@ public abstract class BaseRepository<T> {
 
         return results;
     }
+
+    public abstract List<T> getAll();
+
+    public abstract void enter();
+
+    public abstract void search();
+
+    public abstract void update();
+
+    public abstract void delete();
 }

@@ -16,9 +16,29 @@ public class CustomerRepository extends BaseRepository<Customer> {
         super(databaseConnection);
         this.customerMapper = customerMapper;
     }
-
-    public List<Customer> getAllCustomers() {
+    @Override
+    public List<Customer> getAll() {
         String query = "SELECT * FROM customer";
         return executeQuery(query, customerMapper::mapRow);
+    }
+
+    @Override
+    public void enter() {
+
+    }
+
+    @Override
+    public void search() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void delete() {
+
     }
 }

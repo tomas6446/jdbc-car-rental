@@ -17,8 +17,29 @@ public class ReservationRepository extends BaseRepository<Reservation> {
         this.reservationMapper = reservationMapper;
     }
 
-    public List<Reservation> getAllReservations() {
+    @Override
+    public List<Reservation> getAll() {
         String query = "SELECT * FROM reservation";
         return executeQuery(query, reservationMapper::mapRow);
+    }
+
+    @Override
+    public void enter() {
+
+    }
+
+    @Override
+    public void search() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void delete() {
+
     }
 }
