@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @author Tomas Kozakas
  */
 @AllArgsConstructor
-public abstract class BaseRepository<T> {
+public abstract class BaseRepository<T> implements Repository<T> {
     protected DatabaseConnection databaseConnection;
 
     protected List<T> executeQuery(String query, Function<ResultSet, T> resultSetMapper) {

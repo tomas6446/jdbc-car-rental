@@ -10,9 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
-    private Integer customer_id;
+public class Customer implements PrintableTable {
+    private Integer customerId;
     private String name;
     private String email;
     private String phone;
+
+    @Override
+    public String toTableRow() {
+        return String.format("| %-12d | %-20s | %-25s | %-12s |",
+                customerId, name, email, phone);
+    }
 }

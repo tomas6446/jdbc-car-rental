@@ -2,7 +2,7 @@ package com.jdbc.carrental;
 
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.menu.Menu;
+import com.jdbc.carrental.printer.MenuPrinter;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class CarRental {
@@ -13,7 +13,7 @@ public class CarRental {
         String password = dotenv.get("DB_PASSWORD");
         DatabaseConnection databaseConnection = new DatabaseConnection(url, username, password);
 
-        Menu menu = new Menu(databaseConnection);
-        menu.displayMenu();
+        MenuPrinter menuPrinter = new MenuPrinter(databaseConnection);
+        menuPrinter.displayMenu();
     }
 }

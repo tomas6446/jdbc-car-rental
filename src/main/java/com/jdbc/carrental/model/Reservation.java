@@ -12,10 +12,16 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class Reservation implements PrintableTable{
     private Integer reservationId;
     private Integer carId;
     private Integer customerId;
     private Date reservationDate;
     private Date expirationDate;
+
+    @Override
+    public String toTableRow() {
+        return String.format("| %-16d | %-6d | %-12d | %-12s | %-12s |",
+                reservationId, carId, customerId, reservationDate, expirationDate);
+    }
 }

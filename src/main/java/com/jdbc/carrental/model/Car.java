@@ -11,10 +11,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Car {
+public class Car implements PrintableTable{
     private Integer carId;
     private String manufacturer;
     private String model;
     private Integer year;
     private Double dailyRate;
+
+    @Override
+    public String toTableRow() {
+        return String.format("| %-8d | %-12s | %-12s | %-6d | $%-10.2f |",
+                carId, manufacturer, model, year, dailyRate);
+    }
 }
