@@ -4,7 +4,7 @@
 mkdir -p target/classes
 
 # Compile Java source files with Lombok and dotenv JARs in the classpath
-classpath="libs/lombok.jar:libs/java-dotenv-5.2.2.jar:libs/kotlin-stdlib-1.4.0.jar"
+classpath="libs/lombok.jar:libs/java-dotenv-5.2.2.jar:libs/kotlin-stdlib-1.4.0.jar:libs/postgresql-42.6.0.jar"
 find . -name "*.java" -print0 | xargs -0 javac -d target/classes -cp "$classpath"
 
 # Add the libs directory to the classpath for running the program

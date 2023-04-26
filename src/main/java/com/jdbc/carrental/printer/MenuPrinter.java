@@ -60,7 +60,6 @@ public class MenuPrinter {
         Scanner scanner = new Scanner(System.in);
         int operation;
 
-        clearScreen();
         System.out.printf("Choose an operation:%n" +
                 "1. Data search%n" +
                 "2. Data entry%n" +
