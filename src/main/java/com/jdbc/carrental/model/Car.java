@@ -1,6 +1,7 @@
 package com.jdbc.carrental.model;
 
 
+import com.jdbc.carrental.printer.PrintableTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Car implements PrintableTable{
+public class Car implements PrintableTable {
     private Integer carId;
     private String manufacturer;
     private String model;

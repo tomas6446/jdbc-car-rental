@@ -1,14 +1,20 @@
+TRUNCATE customer;
+TRUNCATE car;
+TRUNCATE rent;
+TRUNCATE reservation;
+
 INSERT INTO Customer (name, email, phone)
-VALUES ('John Doe', 'johndoe@gmail.com', '555-1234'),
-       ('Jane Smith', 'janesmith@gmail.com', '555-5678'),
-       ('Bob Johnson', 'bobjohnson@yahoo.com', '555-9101'),
-       ('Emily Davis', 'emilydavis@hotmail.com', '555-1212');
+VALUES ('Tomas Kozakas', 'tomas.kozakas@gmail.com', '13333222'),
+       ('Oskar Krasev', 'oskar.krasev@gmail.com', '53312222'),
+       ('Jane Smith', 'janesmith@gmail.com', '73337222'),
+       ('Bob Johnson', 'bobjohnson@yahoo.com', '83386222'),
+       ('Emily Davis', 'emilydavis@hotmail.com', '93367222');
 
 INSERT INTO Car (manufacturer, model, year, daily_rate)
-VALUES ('Toyota', 'Camry', 2021, 65.00),
-       ('Honda', 'Accord', 2020, 60.00),
-       ('Ford', 'Mustang', 2019, 85.00),
-       ('Chevrolet', 'Corvette', 2021, 150.00);
+VALUES ('Audi', 'A4', 2022, 75.00),
+       ('BMW', 'X5', 2023, 100.00),
+       ('Volkswagen', 'Golf', 2021, 55.00);
+
 
 INSERT INTO Rent (car_id, customer_id, rent_date, return_date, amount_paid)
 VALUES (1, 1, '2023-04-10', '2023-04-14', 260.00),

@@ -3,7 +3,6 @@ package com.jdbc.carrental.printer;
 /**
  * @author Tomas Kozakas
  */
-import com.jdbc.carrental.model.PrintableTable;
 
 import java.util.List;
 

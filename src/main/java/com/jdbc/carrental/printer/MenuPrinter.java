@@ -5,7 +5,6 @@ import com.jdbc.carrental.mapper.CarRowMapper;
 import com.jdbc.carrental.mapper.CustomerRowMapper;
 import com.jdbc.carrental.mapper.RentRowMapper;
 import com.jdbc.carrental.mapper.ReservationRowMapper;
-import com.jdbc.carrental.model.PrintableTable;
 import com.jdbc.carrental.repository.*;
 
 import java.util.Scanner;
@@ -65,8 +64,8 @@ public class MenuPrinter {
         System.out.printf("Choose an operation:%n" +
                 "1. Data search%n" +
                 "2. Data entry%n" +
-                "3. Data update (modification)%n" +
-                "4. Data deletion (removal)%n" +
+                "3. Data update%n" +
+                "4. Data deletion%n" +
                 "5. Go back%n" +
                 "Enter your choice (1-5): ");
         operation = scanner.nextInt();

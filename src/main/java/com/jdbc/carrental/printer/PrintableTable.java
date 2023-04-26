@@ -1,4 +1,4 @@
-package com.jdbc.carrental.model;
+package com.jdbc.carrental.printer;
 
 /**
  * @author Tomas Kozakas
