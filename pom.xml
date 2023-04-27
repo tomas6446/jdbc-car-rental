@@ -51,6 +51,8 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>20</release>
+                    <source>19</source>
+                    <target>19</target>
                 </configuration>
             </plugin>
         </plugins>
