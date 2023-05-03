@@ -1,10 +1,7 @@
 package com.jdbc.carrental.printer;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.mapper.CarRowMapper;
-import com.jdbc.carrental.mapper.CustomerRowMapper;
-import com.jdbc.carrental.mapper.RentRowMapper;
-import com.jdbc.carrental.mapper.ReservationRowMapper;
+import com.jdbc.carrental.mapper.*;
 import com.jdbc.carrental.repository.*;
 
 import java.util.Scanner;
@@ -17,49 +14,66 @@ public class MenuPrinter {
     private final RentRepository rentRepository;
     private final ReservationRepository reservationRepository;
     private final CarRepository carRepository;
-
+    private final CarRentalStatsRepository carRentalStatsRepository;
     public MenuPrinter(DatabaseConnection databaseConnection) {
         this.customerRepository = new CustomerRepository(databaseConnection, new CustomerRowMapper());
         this.rentRepository = new RentRepository(databaseConnection, new RentRowMapper());
         this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationRowMapper());
         this.carRepository = new CarRepository(databaseConnection, new CarRowMapper());
+        this.carRentalStatsRepository = new CarRentalStatsRepository(databaseConnection, new CarStatsMapper());
     }
 
     public void displayMenu() {
         Scanner scanner = new Scanner(System.in);
         int option;
+        do {
+            clearScreen();
+            System.out.printf(
+                    "Please choose an option:%n" +
+                            "1. Customer%n" +
+                            "2. Rent%n" +
+                            "3. Reservation%n" +
+                            "4. Car%n" +
+                            "5. Car rental stats%n" +
+                            "6. Exit%n" +
+                            "Enter your choice (1-5): ");
+            option = scanner.nextInt();
 
-        clearScreen();
-        System.out.printf(
-                "Please choose an option:%n" +
-                        "1. Customer%n" +
-                        "2. Rent%n" +
-                        "3. Reservation%n" +
-                        "4. Car%n" +
-                        "5. Exit%n" +
-                        "Enter your choice (1-5): ");
-        option = scanner.nextInt();
+            switch (option) {
+                case 1 -> handleRepository(customerRepository);
+                case 2 -> {
+                    TablePrinter.printTable("Car Table", carRepository.getAll());
+                    handleRepository(rentRepository);
+                }
+                case 3 -> {
+                    TablePrinter.printTable("Car Table", carRepository.getAll());
+                    handleRepository(reservationRepository);
+                }
+                case 4 -> handleRepository(carRepository);
+                case 5 -> printStats();
+                case 6 -> {
+                    System.out.println("Exiting the system. Goodbye!");
+                    System.exit(0);
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        } while (true);
+    }
 
-        switch (option) {
-            case 1 -> handleRepository(customerRepository);
-            case 2 -> {
-                TablePrinter.printTable("Car Table", carRepository.getAll());
-                handleRepository(rentRepository);
-            }
-            case 3 -> {
-                TablePrinter.printTable("Car Table", carRepository.getAll());
-                handleRepository(reservationRepository);
-            }
-            case 4 -> handleRepository(carRepository);
-            case 5 -> {
-                System.out.println("Exiting the system. Goodbye!");
-                System.exit(0);
-            }
-            default -> {
-                System.out.println("Invalid option. Please try again.");
+    private void printStats() {
+        Scanner scanner = new Scanner(System.in);
+        int operation;
+
+        TablePrinter.printTable("Car Stats Table", carRentalStatsRepository.getAll());
+        System.out.printf("Choose an operation:%n" +
+                "0. Go back%n" +
+                "Enter your choice: ");
+        operation = scanner.nextInt();
+        do {
+            if (operation == 0) {
                 displayMenu();
             }
-        }
+        } while (true);
     }
 
     private int displayOperations() {

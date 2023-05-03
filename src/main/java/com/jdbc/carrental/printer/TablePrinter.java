@@ -9,8 +9,14 @@ import java.util.List;
 public class TablePrinter {
     public static <T extends PrintableTable> void printTable(String title, List<T> items) {
         System.out.println(title);
-        for (T item : items) {
-            System.out.println(item.toTableRow());
+        if (items.isEmpty()) {
+            System.out.println("**Is empty**\n");
+        } else {
+            for (T item : items) {
+                System.out.println(item.toTableRow());
+            }
+            System.out.println("\n");
         }
+
     }
 }
