@@ -1,8 +1,3 @@
-TRUNCATE customer;
-TRUNCATE car;
-TRUNCATE rent;
-TRUNCATE reservation;
-
 INSERT INTO Customer (name, email, phone)
 VALUES ('Tomas Kozakas', 'tomas.kozakas@gmail.com', '13333222'),
        ('Oskar Krasev', 'oskar.krasev@gmail.com', '53312222'),

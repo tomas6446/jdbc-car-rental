@@ -1,6 +1,6 @@
-DROP VIEW IF EXISTS car_reservations;
-DROP VIEW IF EXISTS customer_rentals;
-DROP MATERIALIZED VIEW IF EXISTS car_rental_stats;
+DROP VIEW car_reservations;
+DROP VIEW customer_rentals;
+DROP MATERIALIZED VIEW car_rental_stats;
 
 -- Customer names and email addresses along with their car rental dates and return dates
 CREATE VIEW customer_rentals AS

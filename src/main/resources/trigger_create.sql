@@ -1,4 +1,4 @@
-DROP TRIGGER IF EXISTS trg_update_amount_paid ON rent;
+DROP TRIGGER trg_update_amount_paid ON rent;
 
 -- Trigger function to update the amount_paid
 CREATE OR REPLACE FUNCTION update_amount_paid()

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS Customer
+CREATE TABLE Customer
 (
     customer_id SERIAL PRIMARY KEY,
     name        VARCHAR(50) DEFAULT 'Unknown',
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Customer
     phone       VARCHAR(50) DEFAULT 'Unknown'
 );
 
-CREATE TABLE IF NOT EXISTS Rent
+CREATE TABLE Rent
 (
     rent_id     serial PRIMARY KEY,
     car_id      INT NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Rent
     amount_paid DECIMAL(10, 2)
 );
 
-CREATE TABLE IF NOT EXISTS Reservation
+CREATE TABLE Reservation
 (
     reservation_id   serial PRIMARY KEY,
     car_id           INT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Reservation
     expiration_date  DATE
 );
 
-CREATE TABLE IF NOT EXISTS Car
+CREATE TABLE Car
 (
     car_id       serial PRIMARY KEY,
     manufacturer VARCHAR(50)    DEFAULT 'Unknown',
