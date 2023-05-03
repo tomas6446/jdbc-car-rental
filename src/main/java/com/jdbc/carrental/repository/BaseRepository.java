@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Function;
 
 /**
@@ -16,6 +17,7 @@ import java.util.function.Function;
  */
 @AllArgsConstructor
 public abstract class BaseRepository<T> implements Repository<T> {
+    protected Scanner scanner = new Scanner(System.in);
     protected DatabaseConnection databaseConnection;
     private Connection connection;
 

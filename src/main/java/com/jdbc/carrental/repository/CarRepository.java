@@ -25,8 +25,6 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public void enter() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.print("Enter car manufacturer: ");
         String manufacturer = scanner.nextLine();
         System.out.print("Enter car model: ");
@@ -53,8 +51,6 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public void delete() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.print("Enter car id: ");
         int id = Integer.parseInt(scanner.nextLine());
 

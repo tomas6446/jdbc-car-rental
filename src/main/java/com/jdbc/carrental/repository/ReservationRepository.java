@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -29,7 +28,6 @@ public class ReservationRepository extends BaseRepository<Reservation> {
 
     @Override
     public void enter() {
-        Scanner scanner = new Scanner(System.in);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date reservationDate;
         Date expirationDate;
@@ -77,8 +75,6 @@ public class ReservationRepository extends BaseRepository<Reservation> {
 
     @Override
     public void delete() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.print("Enter reservation id: ");
         int id = Integer.parseInt(scanner.nextLine());
 

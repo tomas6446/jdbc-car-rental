@@ -25,8 +25,6 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void enter() {
-        Scanner scanner = new Scanner(System.in);
-
         System.out.print("Enter customer name: ");
         String name = scanner.nextLine();
         System.out.print("Enter customer email: ");
