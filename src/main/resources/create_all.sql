@@ -92,17 +92,14 @@ EXECUTE FUNCTION update_amount_paid();
 CREATE OR REPLACE FUNCTION prevent_renting_reserved_car()
     RETURNS TRIGGER AS
 $$
-DECLARE
-    active_reservation_count INT;
 BEGIN
-    SELECT COUNT(*)
-    INTO active_reservation_count
-    FROM Reservation
-    WHERE car_id = NEW.car_id
-      AND reservation_date <= NEW.rent_date
-      AND expiration_date > NEW.rent_date;
-
-    IF active_reservation_count > 0 THEN
+    IF EXISTS (
+        SELECT 1
+        FROM Reservation
+        WHERE car_id = NEW.car_id
+          AND reservation_date <= NEW.rent_date
+          AND expiration_date > NEW.rent_date
+    ) THEN
         RAISE EXCEPTION 'Cannot create or update rent as there is an active reservation of this car';
     END IF;
 
