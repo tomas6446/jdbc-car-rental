@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS Reservation
     FOREIGN KEY (customer_id) REFERENCES Customer (customer_id)
 );
 
-
 -- Create indexes
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_email ON Customer (email);
 CREATE INDEX IF NOT EXISTS idx_rent_date ON Rent (rent_date);
@@ -63,10 +62,11 @@ FROM Car
          JOIN Reservation ON Car.car_id = Reservation.car_id
          JOIN Customer ON Customer.customer_id = Reservation.customer_id;
 
-CREATE OR REPLACE MATERIALIZED VIEW car_rental_stats AS
+DROP MATERIALIZED VIEW IF EXISTS car_rental_stats;
+CREATE MATERIALIZED VIEW car_rental_stats AS
 SELECT Car.manufacturer,
        Car.model,
-       COUNT(Rent.rent_id) AS total_rentals
+       COUNT(Rent.car_id) AS total_rentals
 FROM Car
          JOIN Rent ON Car.car_id = Rent.car_id
 GROUP BY Car.manufacturer, Car.model;
@@ -88,7 +88,6 @@ CREATE OR REPLACE TRIGGER trg_update_amount_paid
     ON Rent
     FOR EACH ROW
 EXECUTE FUNCTION update_amount_paid();
-
 
 -- Trigger to prevent renting a car if there's an active reservation
 CREATE OR REPLACE FUNCTION prevent_renting_reserved_car()
@@ -116,6 +115,60 @@ CREATE OR REPLACE TRIGGER trg_prevent_renting_reserved_car
     ON Rent
     FOR EACH ROW
 EXECUTE FUNCTION prevent_renting_reserved_car();
+
+-- Trigger to check if the year value is greater than the first created car
+CREATE OR REPLACE FUNCTION check_car_year()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF NEW.year <= 1886 THEN
+        RAISE EXCEPTION 'Car year must be greater than 1886';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE OR REPLACE TRIGGER trg_check_car_year
+    BEFORE INSERT OR UPDATE
+    ON Car
+    FOR EACH ROW
+EXECUTE FUNCTION check_car_year();
+
+-- Trigger to check if reservation_date is less than expiration_date
+CREATE OR REPLACE FUNCTION check_reservation_dates()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF NEW.reservation_date >= NEW.expiration_date THEN
+        RAISE EXCEPTION 'reservation_date must be less than expiration_date';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE OR REPLACE TRIGGER trg_check_reservation_dates
+    BEFORE INSERT OR UPDATE
+    ON Reservation
+    FOR EACH ROW
+EXECUTE FUNCTION check_reservation_dates();
+
+-- Trigger to check if rent_date is less than return_date
+CREATE OR REPLACE FUNCTION check_rent_dates()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF NEW.rent_date >= NEW.return_date THEN
+        RAISE EXCEPTION 'rent_date must be less than return_date';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE OR REPLACE TRIGGER trg_check_rent_dates
+    BEFORE INSERT OR UPDATE
+    ON Rent
+    FOR EACH ROW
+EXECUTE FUNCTION check_rent_dates();
 
 -- Insert data
 INSERT INTO Customer (name, email, phone)
