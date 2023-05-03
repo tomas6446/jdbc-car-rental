@@ -79,6 +79,11 @@ public class RentRepository extends BaseRepository<Rent> {
 
     @Override
     public void delete() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter rent id: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        executeDeleteById("rent", "rent_od", id);
     }
 }

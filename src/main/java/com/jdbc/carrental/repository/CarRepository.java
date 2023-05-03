@@ -53,6 +53,13 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public void delete() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter car id: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        executeDeleteById("reservation", "car_id", id);
+        executeDeleteById("rent", "car_id", id);
+        executeDeleteById("car", "car_id", id);
     }
 }

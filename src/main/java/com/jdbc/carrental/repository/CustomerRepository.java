@@ -51,6 +51,11 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void delete() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter customer id: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        executeDeleteById("customer", "customer_id", id);
     }
 }

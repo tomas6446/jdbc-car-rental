@@ -77,6 +77,11 @@ public class ReservationRepository extends BaseRepository<Reservation> {
 
     @Override
     public void delete() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter reservation id: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        executeDeleteById("reservation", "reservation_id", id);
     }
 }
