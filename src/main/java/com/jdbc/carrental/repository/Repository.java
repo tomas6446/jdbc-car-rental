@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface Repository<T> {
     List<T> getAll();
-    void search();
+    void search() ;
     void enter();
     void update();
     void delete();

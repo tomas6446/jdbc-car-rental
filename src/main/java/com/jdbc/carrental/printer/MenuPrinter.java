@@ -30,20 +30,26 @@ public class MenuPrinter {
         int option;
 
         clearScreen();
-        System.out.printf("Welcome to the Car Rental System!%n" +
+        System.out.printf(
                 "Please choose an option:%n" +
-                "1. Customer%n" +
-                "2. Rent%n" +
-                "3. Reservation%n" +
-                "4. Car%n" +
-                "5. Exit%n" +
-                "Enter your choice (1-5): ");
+                        "1. Customer%n" +
+                        "2. Rent%n" +
+                        "3. Reservation%n" +
+                        "4. Car%n" +
+                        "5. Exit%n" +
+                        "Enter your choice (1-5): ");
         option = scanner.nextInt();
 
         switch (option) {
             case 1 -> handleRepository(customerRepository);
-            case 2 -> handleRepository(rentRepository);
-            case 3 -> handleRepository(reservationRepository);
+            case 2 -> {
+                TablePrinter.printTable("Car Table", carRepository.getAll());
+                handleRepository(rentRepository);
+            }
+            case 3 -> {
+                TablePrinter.printTable("Car Table", carRepository.getAll());
+                handleRepository(reservationRepository);
+            }
             case 4 -> handleRepository(carRepository);
             case 5 -> {
                 System.out.println("Exiting the system. Goodbye!");
@@ -75,8 +81,9 @@ public class MenuPrinter {
     }
 
     private <T extends PrintableTable> void handleRepository(BaseRepository<T> repository) {
-        TablePrinter.printTable(repository.getAll());
         do {
+            clearScreen();
+            TablePrinter.printTable("Table", repository.getAll());
             int operation = displayOperations();
             switch (operation) {
                 case 1 -> repository.search();

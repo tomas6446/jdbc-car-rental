@@ -5,6 +5,7 @@ import com.jdbc.carrental.mapper.CustomerRowMapper;
 import com.jdbc.carrental.model.Customer;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -24,7 +25,18 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void enter() {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Enter customer name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter customer email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter customer phone number: ");
+        String phone = scanner.nextLine();
+
+        String query = "INSERT INTO customer (name, email, phone) " +
+                "VALUES ('" + name + "', '" + email + "', '" + phone + "')";
+        executeInsert(query);
     }
 
     @Override

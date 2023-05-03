@@ -34,4 +34,13 @@ public abstract class BaseRepository<T> implements Repository<T> {
 
         return results;
     }
+
+    protected void executeInsert(String query) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
