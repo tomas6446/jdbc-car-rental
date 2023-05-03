@@ -5,22 +5,17 @@ import com.jdbc.carrental.mapper.CarRowMapper;
 import com.jdbc.carrental.model.Car;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
  */
 public class CarRepository extends BaseRepository<Car> {
-    private final CarRowMapper carMapper;
-
-    public CarRepository(DatabaseConnection databaseConnection, CarRowMapper carMapper) {
+    public CarRepository(DatabaseConnection databaseConnection) {
         super(databaseConnection);
-        this.carMapper = carMapper;
     }
     @Override
     public List<Car> getAll() {
-        String query = "SELECT * FROM car";
-        return executeQuery(query, carMapper::mapRow);
+        return null;
     }
 
     @Override

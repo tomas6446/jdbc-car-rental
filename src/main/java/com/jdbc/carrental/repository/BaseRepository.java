@@ -15,10 +15,7 @@ import java.util.function.Function;
 /**
  * @author Tomas Kozakas
  */
-@AllArgsConstructor
 public abstract class BaseRepository<T> implements Repository<T> {
-    protected Scanner scanner = new Scanner(System.in);
-    protected DatabaseConnection databaseConnection;
     private Connection connection;
 
     protected BaseRepository(DatabaseConnection databaseConnection) {
@@ -28,7 +25,6 @@ public abstract class BaseRepository<T> implements Repository<T> {
             e.printStackTrace();
         }
     }
-
 
     protected List<T> executeQuery(String query, Function<ResultSet, T> resultSetMapper) {
         List<T> results = new ArrayList<>();
@@ -55,7 +51,6 @@ public abstract class BaseRepository<T> implements Repository<T> {
         }
 
     }
-
 
     protected void executeDeleteById(String tableName, String idName, int id) {
         String query = "DELETE FROM " + tableName + " WHERE " + idName + " = ?";

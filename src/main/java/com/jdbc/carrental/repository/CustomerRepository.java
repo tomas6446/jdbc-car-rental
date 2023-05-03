@@ -11,30 +11,18 @@ import java.util.Scanner;
  * @author Tomas Kozakas
  */
 public class CustomerRepository extends BaseRepository<Customer> {
-    private final CustomerRowMapper customerMapper;
 
-    public CustomerRepository(DatabaseConnection databaseConnection, CustomerRowMapper customerMapper) {
+    public CustomerRepository(DatabaseConnection databaseConnection) {
         super(databaseConnection);
-        this.customerMapper = customerMapper;
     }
     @Override
     public List<Customer> getAll() {
-        String query = "SELECT * FROM customer";
-        return executeQuery(query, customerMapper::mapRow);
+        return null;
     }
 
     @Override
     public void enter() {
-        System.out.print("Enter customer name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter customer email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter customer phone number: ");
-        String phone = scanner.nextLine();
 
-        String query = "INSERT INTO customer (name, email, phone) " +
-                "VALUES ('" + name + "', '" + email + "', '" + phone + "')";
-        executeInsert(query);
     }
 
     @Override
@@ -49,11 +37,6 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void delete() {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter customer id: ");
-        int id = Integer.parseInt(scanner.nextLine());
-
-        executeDeleteById("customer", "customer_id", id);
     }
 }
