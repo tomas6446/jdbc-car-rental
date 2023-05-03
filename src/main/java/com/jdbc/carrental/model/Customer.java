@@ -4,6 +4,7 @@ import com.jdbc.carrental.printer.PrintableTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Tomas Kozakas
@@ -16,6 +17,12 @@ public class Customer implements PrintableTable {
     private String name;
     private String email;
     private String phone;
+
+    public Customer(String name, String email, String phone) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
 
     @Override
     public String toTableRow() {

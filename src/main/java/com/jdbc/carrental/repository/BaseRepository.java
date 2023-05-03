@@ -1,7 +1,6 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import lombok.AllArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.function.Function;
 
 /**
@@ -37,8 +35,6 @@ public abstract class BaseRepository<T> implements Repository<T> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
         return results;
     }
 
@@ -52,15 +48,21 @@ public abstract class BaseRepository<T> implements Repository<T> {
 
     }
 
-    protected void executeDeleteById(String tableName, String idName, int id) {
+    protected void executeDelete(String tableName, String idName, int id) {
         String query = "DELETE FROM " + tableName + " WHERE " + idName + " = ?";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    protected void executeUpdate(String query) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

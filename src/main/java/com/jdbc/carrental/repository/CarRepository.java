@@ -1,9 +1,9 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.mapper.CarRowMapper;
 import com.jdbc.carrental.model.Car;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,22 +15,26 @@ public class CarRepository extends BaseRepository<Car> {
     }
     @Override
     public List<Car> getAll() {
-        return null;
+        return executeQuery("SELECT * FROM car", resultSet -> {
+            Car car = new Car();
+            try {
+                car.setCarId(resultSet.getInt("car_id"));
+                car.setManufacturer(resultSet.getString("manufacturer"));
+                car.setModel(resultSet.getString("model"));
+                car.setYear(resultSet.getInt("year"));
+                car.setDailyRate(resultSet.getDouble("daily_rate"));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return car;
+        });
     }
 
     @Override
-    public void enter() {
-        System.out.print("Enter car manufacturer: ");
-        String manufacturer = scanner.nextLine();
-        System.out.print("Enter car model: ");
-        String model = scanner.nextLine();
-        System.out.print("Enter car year: ");
-        int year = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter car daily_rate: ");
-        double daily_rate = Double.parseDouble(scanner.nextLine());
-
+    public void enter(Car car) {
         String query = "INSERT INTO car (manufacturer, model, year, daily_rate) " +
-                "VALUES ('" + manufacturer + "', '" + model + "', '" + year + "', '" + daily_rate + "')";
+                "VALUES ('" + car.getManufacturer() + "', '" + car.getModel() + "', '" + car.getYear() + "', '" + car.getDailyRate() + "')";
         executeInsert(query);
     }
 
@@ -40,17 +44,18 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public void update() {
-
+    public void update(int id, Car car) {
+        String query = "UPDATE Car " +
+                "SET manufacturer = '" + car.getManufacturer() + "', " +
+                "model = '" + car.getModel() + "', " +
+                "year = " + car.getYear() + ", " +
+                "daily_rate = " + car.getDailyRate() + " " +
+                "WHERE car_id = " + id;
+        executeUpdate(query);
     }
 
     @Override
-    public void delete() {
-        System.out.print("Enter car id: ");
-        int id = Integer.parseInt(scanner.nextLine());
-
-        executeDeleteById("reservation", "car_id", id);
-        executeDeleteById("rent", "car_id", id);
-        executeDeleteById("car", "car_id", id);
+    public void delete(int id) {
+        executeDelete("car", "car_id", id);
     }
 }
