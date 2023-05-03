@@ -21,6 +21,7 @@ public class CarRentalStatsRepository extends BaseRepository<CarStats> {
     public List<CarStats> getAll() {
         String query = "SELECT * FROM car_rental_stats";
         return executeQuery(query, carStatsMapper::mapRow);
+
     }
 
     @Override
