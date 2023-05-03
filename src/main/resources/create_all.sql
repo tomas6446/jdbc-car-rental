@@ -62,7 +62,6 @@ FROM Car
          JOIN Reservation ON Car.car_id = Reservation.car_id
          JOIN Customer ON Customer.customer_id = Reservation.customer_id;
 
-DROP MATERIALIZED VIEW IF EXISTS car_rental_stats;
 CREATE MATERIALIZED VIEW car_rental_stats AS
 SELECT Car.manufacturer,
        Car.model,
