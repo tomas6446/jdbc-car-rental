@@ -77,10 +77,7 @@ public class MenuPrinter {
                 case 2 -> customerRepository.search();
                 case 3 -> customerRepository.update(getId(), getCustomer());
                 case 4 -> customerRepository.delete(getId());
-                case 0 -> {
-                    System.out.println("Exiting the system. Goodbye!");
-                    System.exit(0);
-                }
+                case 0 -> displayMenu();
                 default -> System.out.println("Invalid option. Please try again.");
             }
         } while (true);

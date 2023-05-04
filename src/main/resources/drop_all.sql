@@ -1,10 +1,17 @@
 -- Drop triggers
 DROP TRIGGER IF EXISTS trg_prevent_renting_reserved_car ON Rent;
 DROP TRIGGER IF EXISTS trg_update_amount_paid ON Rent;
+DROP TRIGGER IF EXISTS trg_check_car_year ON Car;
+DROP TRIGGER IF EXISTS trg_check_reservation_dates ON Reservation;
+DROP TRIGGER IF EXISTS trg_check_rent_dates ON Rent;
+
 
 -- Drop functions
-DROP FUNCTION IF EXISTS update_amount_paid();
 DROP FUNCTION IF EXISTS prevent_renting_reserved_car();
+DROP FUNCTION IF EXISTS update_amount_paid();
+DROP FUNCTION IF EXISTS check_car_year();
+DROP FUNCTION IF EXISTS check_rent_dates();
+DROP FUNCTION IF EXISTS check_reservation_dates();
 
 -- Remove foreign keys
 ALTER TABLE IF EXISTS Rent
