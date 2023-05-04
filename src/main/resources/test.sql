@@ -55,4 +55,12 @@ VALUES (1, 1, '2023-04-14', '2023-04-10', 260.00);
 INSERT INTO Reservation (car_id, customer_id, reservation_date, expiration_date)
 VALUES (1, 4, '2023-04-14', '2023-04-10');
 
+-- Test kiek uzmuokejo
+INSERT INTO Rent (car_id, customer_id, rent_date, return_date)
+VALUES (1, 5, '2023-03-10', '2023-04-25');
+SELECT *
+FROM Rent;
 
+-- Test non valid phone number
+INSERT INTO Customer (name, email, phone)
+VALUES ('Tomas Kozakas', 'tomaskozakas@gmail.com', '3767217198');
