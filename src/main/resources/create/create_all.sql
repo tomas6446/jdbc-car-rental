@@ -24,8 +24,13 @@ CREATE TABLE IF NOT EXISTS Rent
     rent_date   DATE,
     return_date DATE,
     amount_paid DECIMAL(10, 2),
-    FOREIGN KEY (car_id) REFERENCES Car (car_id),
-    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id)
+
+    CONSTRAINT rent_car_id_fkey
+        FOREIGN KEY (car_id)
+            REFERENCES Car (car_id) ON DELETE CASCADE,
+    CONSTRAINT rent_customer_id_fkey
+        FOREIGN KEY (customer_id)
+            REFERENCES Customer (customer_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Reservation
@@ -35,8 +40,13 @@ CREATE TABLE IF NOT EXISTS Reservation
     customer_id      INT NOT NULL,
     reservation_date DATE,
     expiration_date  DATE,
-    FOREIGN KEY (car_id) REFERENCES Car (car_id),
-    FOREIGN KEY (customer_id) REFERENCES Customer (customer_id)
+
+    CONSTRAINT reservation_car_id_fkey
+        FOREIGN KEY (car_id)
+            REFERENCES Car (car_id) ON DELETE CASCADE,
+    CONSTRAINT reservation_customer_id_fkey
+        FOREIGN KEY (customer_id)
+            REFERENCES Customer (customer_id) ON DELETE CASCADE
 );
 
 -- Create indexes
@@ -98,18 +108,17 @@ CREATE TRIGGER trg_update_amount_paid
     FOR EACH ROW
 EXECUTE FUNCTION update_amount_paid();
 
--- Trigger to prevent renting a car if there's an active reservation
 CREATE OR REPLACE FUNCTION prevent_renting_reserved_car()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF EXISTS (
-        SELECT 1
-        FROM Reservation
-        WHERE car_id = NEW.car_id
-          AND reservation_date <= NEW.rent_date
-          AND expiration_date > NEW.rent_date
-    ) THEN
+    IF EXISTS(
+            SELECT 1
+            FROM Reservation
+            WHERE car_id = NEW.car_id
+              AND reservation_date <= NEW.rent_date
+              AND expiration_date > NEW.rent_date
+        ) THEN
         RAISE EXCEPTION 'Cannot create or update rent as there is an active reservation of this car';
     END IF;
 
@@ -122,7 +131,6 @@ CREATE TRIGGER trg_prevent_renting_reserved_car
     FOR EACH ROW
 EXECUTE FUNCTION prevent_renting_reserved_car();
 
--- Trigger to check if the year value is greater than the first created car
 CREATE OR REPLACE FUNCTION check_car_year()
     RETURNS TRIGGER AS
 $$
@@ -140,7 +148,6 @@ CREATE TRIGGER trg_check_car_year
     FOR EACH ROW
 EXECUTE FUNCTION check_car_year();
 
--- Trigger to check if reservation_date is less than expiration_date
 CREATE OR REPLACE FUNCTION check_reservation_dates()
     RETURNS TRIGGER AS
 $$

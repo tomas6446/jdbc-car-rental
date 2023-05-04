@@ -11,7 +11,6 @@ import java.util.Scanner;
  * @author Tomas Kozakas
  */
 public class MenuPrinter {
-    private Scanner scanner = new Scanner(System.in);
     private final CustomerRepository customerRepository;
     private final RentRepository rentRepository;
     private final ReservationRepository reservationRepository;
@@ -26,6 +25,7 @@ public class MenuPrinter {
 
 
     public void displayMenu() {
+        Scanner scanner = new Scanner(System.in);
         int option;
         do {
             clearScreen();
@@ -67,6 +67,7 @@ public class MenuPrinter {
     }
 
     private void handleCustomer() {
+        Scanner scanner = new Scanner(System.in);
         int option;
         do {
             printMenu("Customer Table", customerRepository);
@@ -84,6 +85,7 @@ public class MenuPrinter {
     }
 
     private int getId() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Id: ");
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -92,6 +94,7 @@ public class MenuPrinter {
 
     @NotNull
     private Customer getCustomer() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Email: ");
