@@ -5,7 +5,6 @@ DROP TRIGGER IF EXISTS trg_check_car_year ON Car;
 DROP TRIGGER IF EXISTS trg_check_reservation_dates ON Reservation;
 DROP TRIGGER IF EXISTS trg_check_rent_dates ON Rent;
 
-
 -- Drop functions
 DROP FUNCTION IF EXISTS prevent_renting_reserved_car();
 DROP FUNCTION IF EXISTS update_amount_paid();
