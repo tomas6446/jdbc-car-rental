@@ -1,4 +1,5 @@
 -- Create tables
+CREATE SCHEMA toko7940
 
 CREATE TABLE IF NOT EXISTS toko7940.Customer
 (
@@ -57,8 +58,8 @@ CREATE TABLE IF NOT EXISTS toko7940.Reservation
 );
 
 -- Create indexes
-CREATE UNIQUE INDEX IF NOT EXISTS toko7940_idx_unique_email ON toko7940.Customer (email);
-CREATE INDEX IF NOT EXISTS toko7940_idx_rent_date ON toko7940.Rent (rent_date);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_email ON toko7940.Customer (email);
+CREATE INDEX IF NOT EXISTS idx_rent_date ON toko7940.Rent (rent_date);
 
 -- Create views
 CREATE OR REPLACE VIEW toko7940.customer_rentals AS
@@ -99,7 +100,7 @@ GROUP BY toko7940.Car.manufacturer, toko7940.Car.model;
 --REFRESH MATERIALIZED VIEW toko7940.car_rental_stats;
 
 -- Create triggers
-CREATE OR REPLACE FUNCTION toko7940_update_amount_paid()
+CREATE OR REPLACE FUNCTION update_amount_paid()
     RETURNS TRIGGER AS
 $$
 BEGIN
@@ -109,13 +110,13 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER toko7940_trg_update_amount_paid
+CREATE TRIGGER trg_update_amount_paid
     BEFORE INSERT OR UPDATE
     ON toko7940.Rent
     FOR EACH ROW
-EXECUTE FUNCTION toko7940_update_amount_paid();
+EXECUTE FUNCTION update_amount_paid();
 
-CREATE OR REPLACE FUNCTION toko7940_prevent_renting_reserved_car()
+CREATE OR REPLACE FUNCTION prevent_renting_reserved_car()
     RETURNS TRIGGER AS
 $$
 BEGIN
@@ -132,11 +133,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER toko7940_trg_prevent_renting_reserved_car
+CREATE TRIGGER trg_prevent_renting_reserved_car
     BEFORE INSERT OR UPDATE
     ON toko7940.Rent
     FOR EACH ROW
-EXECUTE FUNCTION toko7940_prevent_renting_reserved_car();
+EXECUTE FUNCTION prevent_renting_reserved_car();
 
 -- Insert data
 INSERT INTO toko7940.Customer (name, email, phone)

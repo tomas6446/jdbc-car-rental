@@ -1,11 +1,10 @@
 -- Drop triggers
-DROP TRIGGER IF EXISTS toko7940_trg_prevent_renting_reserved_car ON toko7940.Rent;
-DROP TRIGGER IF EXISTS toko7940_trg_update_amount_paid ON toko7940.Rent;
-
+DROP TRIGGER IF EXISTS trg_prevent_renting_reserved_car ON toko7940.Rent;
+DROP TRIGGER IF EXISTS trg_update_amount_paid ON toko7940.Rent;
 
 -- Drop functions
-DROP FUNCTION IF EXISTS toko7940_prevent_renting_reserved_car();
-DROP FUNCTION IF EXISTS toko7940_update_amount_paid();
+DROP FUNCTION IF EXISTS prevent_renting_reserved_car();
+DROP FUNCTION IF EXISTS update_amount_paid();
 
 -- Remove foreign keys
 ALTER TABLE IF EXISTS toko7940.Rent
@@ -24,8 +23,8 @@ DROP VIEW IF EXISTS toko7940.car_rentals;
 DROP VIEW IF EXISTS toko7940.customer_rentals;
 
 -- Drop indexes
-DROP INDEX IF EXISTS toko7940_idx_unique_email;
-DROP INDEX IF EXISTS toko7940_idx_rent_date;
+DROP INDEX IF EXISTS idx_unique_email;
+DROP INDEX IF EXISTS idx_rent_date;
 
 -- Drop tables
 DROP TABLE IF EXISTS toko7940.Rent;
@@ -33,3 +32,4 @@ DROP TABLE IF EXISTS toko7940.Reservation;
 DROP TABLE IF EXISTS toko7940.Customer;
 DROP TABLE IF EXISTS toko7940.Car;
 
+DROP SCHEMA toko7940
