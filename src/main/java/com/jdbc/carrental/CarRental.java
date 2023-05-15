@@ -5,8 +5,10 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.printer.MenuPrinter;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.sql.SQLException;
+
 public class CarRental {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Dotenv dotenv = Dotenv.load();
         String url = dotenv.get("DB_URL");
         String username = dotenv.get("DB_USERNAME");
