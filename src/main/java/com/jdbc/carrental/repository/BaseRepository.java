@@ -16,10 +16,9 @@ import java.util.function.Function;
  */
 public abstract class BaseRepository<T> implements Repository<T> {
     private Connection connection;
-
     protected BaseRepository(DatabaseConnection databaseConnection) {
         try {
-            connection = databaseConnection.getConnection();
+            this.connection = databaseConnection.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }

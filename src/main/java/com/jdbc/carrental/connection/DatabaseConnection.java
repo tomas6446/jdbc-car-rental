@@ -14,8 +14,9 @@ public class DatabaseConnection {
     private String url;
     private String username;
     private String password;
+    private String schema;
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        return DriverManager.getConnection(url + "?currentSchema=" + schema, username, password);
     }
 }

@@ -46,7 +46,7 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public void update(int id, Car car) {
-        String query = "UPDATE Car " +
+        String query = "UPDATE car " +
                 "SET manufacturer = '" + car.getManufacturer() + "', " +
                 "model = '" + car.getModel() + "', " +
                 "year = " + car.getYear() + ", " +

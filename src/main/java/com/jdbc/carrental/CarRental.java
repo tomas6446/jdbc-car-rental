@@ -11,7 +11,8 @@ public class CarRental {
         String url = dotenv.get("DB_URL");
         String username = dotenv.get("DB_USERNAME");
         String password = dotenv.get("DB_PASSWORD");
-        DatabaseConnection databaseConnection = new DatabaseConnection(url, username, password);
+        String schema = dotenv.get("DB_SCHEMA");
+        DatabaseConnection databaseConnection = new DatabaseConnection(url, username, password, schema);
 
         MenuPrinter menuPrinter = new MenuPrinter(databaseConnection);
         menuPrinter.displayMenu();
