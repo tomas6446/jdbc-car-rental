@@ -64,3 +64,5 @@ FROM toko7940.Rent;
 -- Test non valid phone number
 INSERT INTO toko7940.Customer (name, email, phone)
 VALUES ('Tomas Kozakas', 'tomaskozakas@gmail.com', '3767217198');
+
+SELECT * FROM toko7940.Rent WHERE amount_paid = 27450.00;
