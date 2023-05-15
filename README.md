@@ -1,2 +1,2 @@
-# springboot-car-rental
-springboot-car-rental
+# jdbc-car-rental
+jdbc-car-rental

@@ -15,6 +15,7 @@ public class CustomerRepository extends BaseRepository<Customer> {
     public CustomerRepository(DatabaseConnection databaseConnection) {
         super(databaseConnection);
     }
+
     @Override
     public List<Customer> getAll() {
         return executeQuery("SELECT * FROM customer", resultSet -> {
@@ -56,8 +57,6 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void delete(int id) {
-        executeDelete("rent", "customer_id", id);
-        executeDelete("reservation", "customer_id", id);
         executeDelete("customer", "customer_id", id);
     }
 
