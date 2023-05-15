@@ -6,6 +6,7 @@ import com.jdbc.carrental.model.Reservation;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -64,4 +65,10 @@ public class RentRepository extends BaseRepository<Rent> {
     public void delete(int id) {
         executeDelete("rent", "rent_id", id);
     }
+
+    @Override
+    public Rent ask(Scanner scanner) {
+        return null;
+    }
+
 }

@@ -5,6 +5,7 @@ import com.jdbc.carrental.model.Customer;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -58,5 +59,16 @@ public class CustomerRepository extends BaseRepository<Customer> {
         executeDelete("rent", "customer_id", id);
         executeDelete("reservation", "customer_id", id);
         executeDelete("customer", "customer_id", id);
+    }
+
+    @Override
+    public Customer ask(Scanner scanner) {
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Phone number: ");
+        String number = scanner.nextLine();
+        return new Customer(name, email, number);
     }
 }

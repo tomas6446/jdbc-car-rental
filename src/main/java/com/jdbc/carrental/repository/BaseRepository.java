@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Function;
 
 /**
@@ -64,5 +65,12 @@ public abstract class BaseRepository<T> implements Repository<T> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getId(Scanner scanner) {
+        System.out.print("Id: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        return id;
     }
 }

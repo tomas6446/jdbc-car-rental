@@ -5,6 +5,7 @@ import com.jdbc.carrental.model.Car;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -57,5 +58,10 @@ public class CarRepository extends BaseRepository<Car> {
     @Override
     public void delete(int id) {
         executeDelete("car", "car_id", id);
+    }
+
+    @Override
+    public Car ask(Scanner scanner) {
+        return null;
     }
 }
