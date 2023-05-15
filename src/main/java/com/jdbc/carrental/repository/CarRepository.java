@@ -1,67 +1,65 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
+import com.jdbc.carrental.mapper.CarMapper;
 import com.jdbc.carrental.model.Car;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
  */
 public class CarRepository extends BaseRepository<Car> {
-    public CarRepository(DatabaseConnection databaseConnection) {
+    private final CarMapper carMapper;
+
+    public CarRepository(DatabaseConnection databaseConnection, CarMapper carMapper) {
         super(databaseConnection);
-    }
-    @Override
-    public List<Car> getAll() {
-        return executeQuery("SELECT * FROM car", resultSet -> {
-            Car car = new Car();
-            try {
-                car.setCarId(resultSet.getInt("car_id"));
-                car.setManufacturer(resultSet.getString("manufacturer"));
-                car.setModel(resultSet.getString("model"));
-                car.setYear(resultSet.getInt("year"));
-                car.setDailyRate(resultSet.getDouble("daily_rate"));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            return car;
-        });
+        this.carMapper = carMapper;
     }
 
     @Override
-    public void enter(Car car) {
-        String query = "INSERT INTO car (manufacturer, model, year, daily_rate) " +
-                "VALUES ('" + car.getManufacturer() + "', '" + car.getModel() + "', '" + car.getYear() + "', '" + car.getDailyRate() + "')";
-        executeInsert(query);
+    public List<Car> getAll() throws SQLException {
+        return executeQuery("SELECT * FROM car", carMapper::map);
     }
 
     @Override
-    public void search() {
-
+    public void enter(Car car) throws SQLException {
+        executeInsert("INSERT INTO car (manufacturer, model, year, daily_rate) " +
+                "VALUES ('" + car.getManufacturer() + "', '" + car.getModel() + "', '" + car.getYear() + "', '" + car.getDailyRate() + "')");
     }
 
     @Override
-    public void update(int id, Car car) {
-        String query = "UPDATE car " +
+    public List<Car> search(SearchParam searchParam) throws SQLException {
+        return executeQuery("SELECT * FROM reservation WHERE " + searchParam.column() + searchParam.like(),
+                carMapper::map);
+    }
+
+    @Override
+    public void update(int id, Car car) throws SQLException {
+        executeUpdate("UPDATE car " +
                 "SET manufacturer = '" + car.getManufacturer() + "', " +
                 "model = '" + car.getModel() + "', " +
                 "year = " + car.getYear() + ", " +
                 "daily_rate = " + car.getDailyRate() + " " +
-                "WHERE car_id = " + id;
-        executeUpdate(query);
+                "WHERE car_id = " + id);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLException {
         executeDelete("car", "car_id", id);
     }
 
     @Override
-    public Car ask(Scanner scanner) {
-        return null;
+    public Car askInsert() {
+        System.out.print("Manufacturer: ");
+        String manufacturer = scanner.nextLine();
+        System.out.print("Model: ");
+        String model = scanner.nextLine();
+        System.out.print("Year: ");
+        int year = scanner.nextInt();
+        System.out.print("Daily rate: ");
+        double daily_rate = scanner.nextDouble();
+        return new Car(manufacturer, model, year, daily_rate);
     }
 }

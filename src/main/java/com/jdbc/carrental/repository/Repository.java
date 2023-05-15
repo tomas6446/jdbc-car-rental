@@ -1,16 +1,21 @@
 package com.jdbc.carrental.repository;
 
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
  */
 public interface Repository<T> {
-    List<T> getAll();
-    void search() ;
-    void enter(T t);
-    void update(int id, T t);
-    void delete(int id);
-    T ask(Scanner scanner);
+    List<T> getAll() throws SQLException;
+
+    List<T> search(BaseRepository.SearchParam searchParam) throws SQLException;
+
+    void enter(T t) throws SQLException;
+
+    void update(int id, T t) throws SQLException;
+
+    void delete(int id) throws SQLException;
+
+    T askInsert();
 }

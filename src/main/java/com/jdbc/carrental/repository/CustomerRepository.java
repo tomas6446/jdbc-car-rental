@@ -1,67 +1,56 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
+import com.jdbc.carrental.mapper.CustomerMapper;
 import com.jdbc.carrental.model.Customer;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
  */
 public class CustomerRepository extends BaseRepository<Customer> {
+    private final CustomerMapper customerMapper;
 
-    public CustomerRepository(DatabaseConnection databaseConnection) {
+    public CustomerRepository(DatabaseConnection databaseConnection, CustomerMapper customerMapper) {
         super(databaseConnection);
+        this.customerMapper = customerMapper;
     }
 
     @Override
-    public List<Customer> getAll() {
-        return executeQuery("SELECT * FROM customer", resultSet -> {
-            Customer customer = new Customer();
-            try {
-                customer.setCustomerId(resultSet.getInt("customer_id"));
-                customer.setName(resultSet.getString("name"));
-                customer.setEmail(resultSet.getString("email"));
-                customer.setPhone(resultSet.getString("phone"));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            return customer;
-        });
+    public List<Customer> getAll() throws SQLException {
+        return executeQuery("SELECT * FROM customer", customerMapper::map);
     }
 
     @Override
-    public void enter(Customer customer) {
-        String query = "INSERT INTO customer (name, email, phone) " +
-                "VALUES ('" + customer.getName() + "', '" + customer.getEmail() + "', '" + customer.getPhone() + "')";
-        executeInsert(query);
+    public void enter(Customer customer) throws SQLException {
+        executeInsert("INSERT INTO customer (name, email, phone) " +
+                "VALUES ('" + customer.getName() + "', '" + customer.getEmail() + "', '" + customer.getPhone() + "')");
     }
 
     @Override
-    public void search() {
-
+    public List<Customer> search(SearchParam searchParam) throws SQLException {
+        return executeQuery("SELECT * FROM customer WHERE " + searchParam.column() + searchParam.like(), customerMapper::map);
     }
 
     @Override
-    public void update(int id, Customer customer) {
-        String query = "UPDATE Customer " +
+    public void update(int id, Customer customer) throws SQLException {
+        executeUpdate("UPDATE customer " +
                 "SET name = '" + customer.getName() + "', " +
                 "email = '" + customer.getEmail() + "', " +
                 "phone = '" + customer.getPhone() + "' " +
-                "WHERE customer_id = " + id;
-        executeUpdate(query);
+                "WHERE customer_id = " + id);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws SQLException {
         executeDelete("customer", "customer_id", id);
     }
 
     @Override
-    public Customer ask(Scanner scanner) {
+    public Customer askInsert() {
+
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Email: ");

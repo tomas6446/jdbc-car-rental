@@ -1,8 +1,13 @@
 package com.jdbc.carrental.printer;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
+import com.jdbc.carrental.mapper.CarMapper;
+import com.jdbc.carrental.mapper.CustomerMapper;
+import com.jdbc.carrental.mapper.RentMapper;
+import com.jdbc.carrental.mapper.ReservationMapper;
 import com.jdbc.carrental.repository.*;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -16,14 +21,14 @@ public class MenuPrinter {
     private final CarRepository carRepository;
 
     public MenuPrinter(DatabaseConnection databaseConnection) {
-        this.customerRepository = new CustomerRepository(databaseConnection);
-        this.rentRepository = new RentRepository(databaseConnection);
-        this.reservationRepository = new ReservationRepository(databaseConnection);
-        this.carRepository = new CarRepository(databaseConnection);
+        this.customerRepository = new CustomerRepository(databaseConnection, new CustomerMapper());
+        this.rentRepository = new RentRepository(databaseConnection, new RentMapper());
+        this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationMapper());
+        this.carRepository = new CarRepository(databaseConnection, new CarMapper());
     }
 
 
-    public void displayMenu() {
+    public void displayMenu() throws SQLException {
         int option;
         do {
             clearScreen();
@@ -36,11 +41,17 @@ public class MenuPrinter {
                             "0. Exit%n" +
                             "Enter your choice (1-5): ");
             option = scanner.nextInt();
-
+            clearScreen();
             switch (option) {
                 case 1 -> handle("Customer", customerRepository);
-                case 2 -> handle("Rent", rentRepository);
-                case 3 -> handle("Reservation", reservationRepository);
+                case 2 -> {
+                    TablePrinter.printTable("Car", carRepository.getAll());
+                    handle("Rent", rentRepository);
+                }
+                case 3 -> {
+                    TablePrinter.printTable("Car", carRepository.getAll());
+                    handle("Reservation", reservationRepository);
+                }
                 case 4 -> handle("Car", carRepository);
                 case 0 -> {
                     System.out.println("Exiting the system. Goodbye!");
@@ -51,10 +62,9 @@ public class MenuPrinter {
         } while (true);
     }
 
-    private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) {
+    private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) throws SQLException {
         int option;
         do {
-            clearScreen();
             TablePrinter.printTable(title, repository.getAll());
 
             System.out.printf("Choose an operation:%n" +
@@ -67,10 +77,10 @@ public class MenuPrinter {
             option = scanner.nextInt();
 
             switch (option) {
-                case 1 -> repository.enter(repository.ask(scanner));
-                case 2 -> repository.search();
-                case 3 -> repository.update(repository.getId(scanner), repository.ask(scanner));
-                case 4 -> repository.delete(repository.getId(scanner));
+                case 1 -> repository.enter(repository.askInsert());
+                case 2 -> TablePrinter.printTable(title, repository.search(repository.askSearch()));
+                case 3 -> repository.update(repository.getId(), repository.askInsert());
+                case 4 -> repository.delete(repository.getId());
                 case 0 -> displayMenu();
                 default -> System.out.println("Invalid option. Please try again.");
             }
