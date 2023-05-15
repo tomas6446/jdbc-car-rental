@@ -20,9 +20,23 @@ public class Reservation implements PrintableTable {
     private Date reservationDate;
     private Date expirationDate;
 
+    public Reservation(Integer carId, Integer customerId, Date reservationDate, Date expirationDate) {
+        this.carId = carId;
+        this.customerId = customerId;
+        this.reservationDate = reservationDate;
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public String header() {
+        return String.format("| %-16s | %-6s | %-12s | %-16s | %-16s |",
+                "reservation_id", "car_id", "customer_id", "reservation_date", "expiration_date");
+    }
+
     @Override
     public String toTableRow() {
-        return String.format("| %-16d | %-6d | %-12d | %-12s | %-12s |",
+        return String.format("| %-16d | %-6d | %-12d | %-16s | %-16s |",
                 reservationId, carId, customerId, reservationDate, expirationDate);
     }
+
 }

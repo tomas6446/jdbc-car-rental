@@ -4,7 +4,6 @@ import com.jdbc.carrental.printer.PrintableTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Tomas Kozakas
@@ -25,8 +24,15 @@ public class Customer implements PrintableTable {
     }
 
     @Override
+    public String header() {
+        return String.format("| %-12s | %-20s | %-25s | %-12s |",
+                "customer_id", "name", "email", "phone");
+    }
+
+    @Override
     public String toTableRow() {
         return String.format("| %-12d | %-20s | %-25s | %-12s |",
                 customerId, name, email, phone);
     }
+
 }
