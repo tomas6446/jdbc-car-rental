@@ -24,6 +24,12 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
+    public List<Rent> getAll(int currentUserId) throws SQLException {
+        return executeQuery("SELECT * FROM rent " +
+                "WHERE customer_id = " + currentUserId, rentMapper::map);
+    }
+
+    @Override
     public void enter(Rent rent) throws SQLException {
         executeInsert("INSERT INTO rent (car_id, customer_id, rent_date, return_date) " +
                 "VALUES (" + rent.getCarId() + ", " + rent.getCustomerId() + ", '" + rent.getRentDate() +
@@ -52,14 +58,12 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public Rent askInsert() {
+    public Rent askInsert(int currentUserId) {
         System.out.print("Car id: ");
         int carId = scanner.nextInt();
-        System.out.print("Customer id: ");
-        int customerId = scanner.nextInt();
 
         DateInput dateInput = getDate(scanner);
-        return new Rent(carId, customerId, dateInput.startDate(), dateInput.endDate());
+        return new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate());
     }
 
 }

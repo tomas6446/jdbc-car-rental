@@ -9,6 +9,8 @@ import java.util.List;
 public interface Repository<T> {
     List<T> getAll() throws SQLException;
 
+    List<T> getAll(int currentUserId) throws SQLException;
+
     List<T> search(BaseRepository.SearchParam searchParam) throws SQLException;
 
     void enter(T t) throws SQLException;
@@ -17,5 +19,5 @@ public interface Repository<T> {
 
     void delete(int id) throws SQLException;
 
-    T askInsert();
+    T askInsert(int currentUserId);
 }

@@ -24,6 +24,12 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
+    public List<Reservation> getAll(int currentUserId) throws SQLException {
+        return executeQuery("SELECT * FROM reservation " +
+                "WHERE customer_id = " + currentUserId, reservationMapper::map);
+    }
+
+    @Override
     public void enter(Reservation reservation) throws SQLException {
         executeInsert("INSERT INTO reservation (car_id, customer_id, reservation_date, expiration_date) " +
                 "VALUES (" + reservation.getCarId() + ", " + reservation.getCustomerId() + ", '" + reservation.getReservationDate() +
@@ -52,13 +58,11 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public Reservation askInsert() {
+    public Reservation askInsert(int currentUserId) {
         System.out.print("Car id: ");
         int carId = scanner.nextInt();
-        System.out.print("Customer id: ");
-        int customerId = scanner.nextInt();
 
         DateInput date = getDate(scanner);
-        return new Reservation(carId, customerId, date.startDate(), date.endDate());
+        return new Reservation(carId, currentUserId, date.startDate(), date.endDate());
     }
 }

@@ -5,6 +5,7 @@ import com.jdbc.carrental.mapper.CustomerMapper;
 import com.jdbc.carrental.model.Customer;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,6 +22,11 @@ public class CustomerRepository extends BaseRepository<Customer> {
     @Override
     public List<Customer> getAll() throws SQLException {
         return executeQuery("SELECT * FROM customer", customerMapper::map);
+    }
+
+    @Override
+    public List<Customer> getAll(int currentUserId) {
+        return Collections.emptyList();
     }
 
     @Override
@@ -49,8 +55,7 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public Customer askInsert() {
-
+    public Customer askInsert(int currentUserId) {
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Email: ");

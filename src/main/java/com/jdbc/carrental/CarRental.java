@@ -17,6 +17,6 @@ public class CarRental {
         DatabaseConnection databaseConnection = new DatabaseConnection(url, username, password, schema);
 
         MenuPrinter menuPrinter = new MenuPrinter(databaseConnection);
-        menuPrinter.displayMenu();
+        menuPrinter.start();
     }
 }

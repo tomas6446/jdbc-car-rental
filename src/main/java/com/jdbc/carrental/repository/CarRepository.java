@@ -5,6 +5,7 @@ import com.jdbc.carrental.mapper.CarMapper;
 import com.jdbc.carrental.model.Car;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,7 +13,6 @@ import java.util.List;
  */
 public class CarRepository extends BaseRepository<Car> {
     private final CarMapper carMapper;
-
     public CarRepository(DatabaseConnection databaseConnection, CarMapper carMapper) {
         super(databaseConnection);
         this.carMapper = carMapper;
@@ -21,6 +21,11 @@ public class CarRepository extends BaseRepository<Car> {
     @Override
     public List<Car> getAll() throws SQLException {
         return executeQuery("SELECT * FROM car", carMapper::map);
+    }
+
+    @Override
+    public List<Car> getAll(int currentUserId) {
+        return Collections.emptyList();
     }
 
     @Override
@@ -51,7 +56,7 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public Car askInsert() {
+    public Car askInsert(int currentUserId) {
         System.out.print("Manufacturer: ");
         String manufacturer = scanner.nextLine();
         System.out.print("Model: ");

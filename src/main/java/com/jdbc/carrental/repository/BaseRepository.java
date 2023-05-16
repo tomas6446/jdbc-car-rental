@@ -62,7 +62,6 @@ public abstract class BaseRepository<T> implements Repository<T> {
         }
     }
 
-
     public int getId() {
         System.out.print("Id: ");
         int id = scanner.nextInt();
@@ -124,6 +123,7 @@ public abstract class BaseRepository<T> implements Repository<T> {
 
         return new SearchParam(column, like);
     }
+
 
     protected boolean isValueInteger(String value) {
         try {
