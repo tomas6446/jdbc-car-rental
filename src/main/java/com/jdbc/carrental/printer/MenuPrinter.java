@@ -1,7 +1,10 @@
 package com.jdbc.carrental.printer;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.mapper.*;
+import com.jdbc.carrental.mapper.CarMapper;
+import com.jdbc.carrental.mapper.CustomerMapper;
+import com.jdbc.carrental.mapper.RentMapper;
+import com.jdbc.carrental.mapper.ReservationMapper;
 import com.jdbc.carrental.model.Customer;
 import com.jdbc.carrental.repository.*;
 
@@ -20,17 +23,37 @@ public class MenuPrinter {
     private int currentUserId;
 
     public MenuPrinter(DatabaseConnection databaseConnection) {
-        this.customerRepository = new CustomerRepository(databaseConnection,  new CustomerMapper());
+        this.customerRepository = new CustomerRepository(databaseConnection, new CustomerMapper());
         this.rentRepository = new RentRepository(databaseConnection, new RentMapper());
         this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationMapper());
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
+    }
+
+    public void start() throws SQLException {
+        clearScreen();
+        int choice;
+        do {
+            System.out.println("Please choose an option:");
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice (0-2): ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> login();
+                case 2 -> register();
+                case 0 -> System.out.println("Exiting the system. Goodbye!");
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+            System.out.println();
+        } while (choice != 0);
     }
 
     private void register() throws SQLException {
         scanner = new Scanner(System.in);
         Customer customer = customerRepository.askInsert(currentUserId);
         customerRepository.enter(customer);
-        System.out.println("Successfully registered");
 
         findUser(customer.getEmail());
     }
@@ -58,10 +81,11 @@ public class MenuPrinter {
         System.out.println("Invalid user.");
     }
 
+
     public void displayMenu() throws SQLException {
-        clearScreen();
         int option;
         do {
+            clearScreen();
             System.out.printf(
                     "Please choose an option:%n" +
                             "1. Rent car%n" +
@@ -90,26 +114,6 @@ public class MenuPrinter {
         } while (true);
     }
 
-    public void start() throws SQLException {
-        clearScreen();
-        int choice;
-        do {
-            System.out.println("Please choose an option:");
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.println("0. Exit");
-            System.out.print("Enter your choice (0-2): ");
-            choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1 -> login();
-                case 2 -> register();
-                case 0 -> System.out.println("Exiting the system. Goodbye!");
-                default -> System.out.println("Invalid choice. Please try again.");
-            }
-            System.out.println();
-        } while (choice != 0);
-    }
 
     private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) throws SQLException {
         int option;
@@ -137,8 +141,6 @@ public class MenuPrinter {
                     TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
                     if (repository.getId() == currentUserId) {
                         repository.delete(currentUserId);
-                    } else {
-                        System.out.println("Invalid ID. Please try again.");
                     }
                 }
                 case 0 -> displayMenu();
