@@ -133,6 +133,7 @@ public class MenuPrinter {
         try (Scanner scanner = new Scanner(System.in)) {
             int option;
             do {
+                TablePrinter.printTable(title, repository.getAll());
                 System.out.printf(("Choose an operation:%%n" +
                         "1. Add new%%n" +
                         "2. Search%%n" +
@@ -150,10 +151,13 @@ public class MenuPrinter {
                         if (value.isPresent()) {
                             repository.enter(value.get());
                         }
+                        clearScreen();
                     }
                     case 2 -> {
                         TablePrinter.printTable(title, repository.getAll());
-                        TablePrinter.printTable("Found " + title, repository.search(repository.askSearch()));
+                        BaseRepository.SearchParam searchParam = repository.askSearch();
+                        clearScreen();
+                        TablePrinter.printTable("Found " + title, repository.search(searchParam));
                     }
                     case 3 -> myRepository(title, repository);
                     case 0 -> displayMenu();
@@ -189,14 +193,15 @@ public class MenuPrinter {
                             if(value.isPresent()) {
                                 repository.update(id, value.get());
                             }
-
                         }
+                        clearScreen();
                     }
                     case 2 -> {
                         int id = repository.getId();
                         if (id != 0 && (id == currentUserId)) {
                             repository.delete(currentUserId);
                         }
+                        clearScreen();
                     }
                     case 0 -> handle(title, repository);
                     default -> System.out.println("Invalid option. Please try again.");

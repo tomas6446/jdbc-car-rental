@@ -158,7 +158,7 @@ public abstract class BaseRepository<T> implements Repository<T> {
     protected record DateInput(Date startDate, Date endDate) {
     }
 
-    protected record SearchParam(String column, String like) {
+    public record SearchParam(String column, String like) {
 
     }
 }
