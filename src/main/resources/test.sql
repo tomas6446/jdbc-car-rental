@@ -65,4 +65,14 @@ FROM toko7940.Rent;
 INSERT INTO toko7940.Customer (name, email, phone)
 VALUES ('Tomas Kozakas', 'tomaskozakas@gmail.com', '3767217198');
 
-SELECT * FROM toko7940.Rent WHERE amount_paid = 27450.00;
+SELECT toko7940.reservation.reservation_id,
+       toko7940.car.model,
+       toko7940.customer.email,
+
+       toko7940.reservation.reservation_date,
+       toko7940.reservation.expiration_date
+FROM toko7940.reservation
+         JOIN toko7940.car ON reservation.car_id = car.car_id
+         JOIN toko7940.customer
+              ON reservation.customer_id = customer.customer_id
+WHERE customer.customer_id = 1

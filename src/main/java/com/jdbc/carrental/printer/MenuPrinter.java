@@ -1,10 +1,7 @@
 package com.jdbc.carrental.printer;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.mapper.CarMapper;
-import com.jdbc.carrental.mapper.CustomerMapper;
-import com.jdbc.carrental.mapper.RentMapper;
-import com.jdbc.carrental.mapper.ReservationMapper;
+import com.jdbc.carrental.mapper.*;
 import com.jdbc.carrental.model.Customer;
 import com.jdbc.carrental.repository.*;
 
@@ -23,17 +20,48 @@ public class MenuPrinter {
     private int currentUserId;
 
     public MenuPrinter(DatabaseConnection databaseConnection) {
-        this.customerRepository = new CustomerRepository(databaseConnection, new CustomerMapper());
+        this.customerRepository = new CustomerRepository(databaseConnection,  new CustomerMapper());
         this.rentRepository = new RentRepository(databaseConnection, new RentMapper());
         this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationMapper());
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
     }
 
+    private void register() throws SQLException {
+        scanner = new Scanner(System.in);
+        Customer customer = customerRepository.askInsert(currentUserId);
+        customerRepository.enter(customer);
+        System.out.println("Successfully registered");
+
+        findUser(customer.getEmail());
+    }
+
+    private void login() throws SQLException {
+        scanner = new Scanner(System.in);
+        System.out.print("Customer email: ");
+        String email = scanner.nextLine();
+
+        findUser(email);
+    }
+
+    private void findUser(String customer) throws SQLException {
+        customerRepository.getAll().forEach(c -> {
+            if (c.getEmail().equals(customer)) {
+                try {
+                    currentUserId = c.getCustomerId();
+                    System.out.println("Successfully connected. Your id: " + currentUserId);
+                    displayMenu();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        System.out.println("Invalid user.");
+    }
 
     public void displayMenu() throws SQLException {
+        clearScreen();
         int option;
         do {
-            clearScreen();
             System.out.printf(
                     "Please choose an option:%n" +
                             "1. Rent car%n" +
@@ -63,6 +91,7 @@ public class MenuPrinter {
     }
 
     public void start() throws SQLException {
+        clearScreen();
         int choice;
         do {
             System.out.println("Please choose an option:");
@@ -80,39 +109,6 @@ public class MenuPrinter {
             }
             System.out.println();
         } while (choice != 0);
-    }
-
-    private void register() throws SQLException {
-        scanner = new Scanner(System.in);
-        Customer customer = customerRepository.askInsert(currentUserId);
-        customerRepository.enter(customer);
-        System.out.println("Successfully registered");
-
-        findUser(customer.getEmail());
-        displayMenu();
-    }
-
-    private void findUser(String customer) throws SQLException {
-        customerRepository.getAll().forEach(c -> {
-            if (c.getEmail().equals(customer)) {
-                try {
-                    currentUserId = c.getCustomerId();
-                    System.out.println("Successfully connected. Your id: " + currentUserId);
-                    displayMenu();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-    private void login() throws SQLException {
-        scanner = new Scanner(System.in);
-        System.out.print("Customer email: ");
-        String email = scanner.nextLine();
-
-        findUser(email);
-        System.out.println("Invalid user.");
     }
 
     private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) throws SQLException {
@@ -141,6 +137,8 @@ public class MenuPrinter {
                     TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
                     if (repository.getId() == currentUserId) {
                         repository.delete(currentUserId);
+                    } else {
+                        System.out.println("Invalid ID. Please try again.");
                     }
                 }
                 case 0 -> displayMenu();

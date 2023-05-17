@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class RentRepository extends BaseRepository<Rent> {
     private final RentMapper rentMapper;
-
     public RentRepository(DatabaseConnection databaseConnection, RentMapper rentMapper) {
         super(databaseConnection);
         this.rentMapper = rentMapper;

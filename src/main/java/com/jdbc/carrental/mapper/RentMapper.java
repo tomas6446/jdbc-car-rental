@@ -1,6 +1,7 @@
 package com.jdbc.carrental.mapper;
 
 import com.jdbc.carrental.model.Rent;
+import com.jdbc.carrental.printer.PrintableTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +22,6 @@ public class RentMapper {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return rent;
     }
 }

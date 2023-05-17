@@ -3,6 +3,7 @@ package com.jdbc.carrental.repository;
 import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.CarMapper;
 import com.jdbc.carrental.model.Car;
+import com.jdbc.carrental.printer.PrintableTable;
 
 import java.sql.SQLException;
 import java.util.Collections;

@@ -1,5 +1,8 @@
 package com.jdbc.carrental.repository;
 
+import com.jdbc.carrental.model.Reservation;
+import com.jdbc.carrental.printer.PrintableTable;
+
 import java.sql.SQLException;
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package com.jdbc.carrental.mapper;
 
 import com.jdbc.carrental.model.Reservation;
+import com.jdbc.carrental.printer.PrintableTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +14,8 @@ public class ReservationMapper {
         Reservation reservation = new Reservation();
         try {
             reservation.setReservationId(resultSet.getInt("reservation_id"));
-            reservation.setCarId(resultSet.getInt("car_id"));
-            reservation.setCustomerId(resultSet.getInt("customer_id"));
+            reservation.setCarModel(resultSet.getString("model"));
+            reservation.setCustomerEmail(resultSet.getString("email"));
             reservation.setReservationDate(resultSet.getDate("reservation_date"));
             reservation.setExpirationDate(resultSet.getDate("expiration_date"));
         } catch (SQLException e) {

@@ -1,6 +1,7 @@
 package com.jdbc.carrental.mapper;
 
 import com.jdbc.carrental.model.Customer;
+import com.jdbc.carrental.printer.PrintableTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
