@@ -15,7 +15,6 @@ import java.util.Scanner;
  * @author Tomas Kozakas
  */
 public class MenuPrinter {
-    private Scanner scanner = new Scanner(System.in);
     private final CustomerRepository customerRepository;
     private final RentRepository rentRepository;
     private final ReservationRepository reservationRepository;
@@ -29,29 +28,32 @@ public class MenuPrinter {
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
     }
 
-    public void start() throws SQLException {
+    public void start() {
         clearScreen();
-        int choice;
-        do {
-            System.out.println("Please choose an option:");
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.println("0. Exit");
-            System.out.print("Enter your choice (0-2): ");
-            choice = scanner.nextInt();
+        try (Scanner scanner = new Scanner(System.in)) {
+            int choice;
+            do {
+                System.out.println("Please choose an option:");
+                System.out.println("1. Login");
+                System.out.println("2. Register");
+                System.out.println("0. Exit");
+                System.out.print("Enter your choice (0-2): ");
+                choice = scanner.nextInt();
 
-            switch (choice) {
-                case 1 -> login();
-                case 2 -> register();
-                case 0 -> System.out.println("Exiting the system. Goodbye!");
-                default -> System.out.println("Invalid choice. Please try again.");
-            }
-            System.out.println();
-        } while (choice != 0);
+                switch (choice) {
+                    case 1 -> login();
+                    case 2 -> register();
+                    case 0 -> System.out.println("Exiting the system. Goodbye!");
+                    default -> System.out.println("Invalid choice. Please try again.");
+                }
+                System.out.println();
+            } while (choice != 0);
+        } catch (SQLException e) {
+            System.out.println("An error occurred. Please try again later");
+        }
     }
 
     private void register() throws SQLException {
-        scanner = new Scanner(System.in);
         Customer customer = customerRepository.askInsert(currentUserId);
         customerRepository.enter(customer);
 
@@ -59,123 +61,140 @@ public class MenuPrinter {
     }
 
     private void login() throws SQLException {
-        scanner = new Scanner(System.in);
-        System.out.print("Customer email: ");
-        String email = scanner.nextLine();
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Customer email: ");
+            String email = scanner.nextLine();
 
-        findUser(email);
+            findUser(email);
+        }
     }
 
-    private void findUser(String customer) throws SQLException {
-        customerRepository.getAll().forEach(c -> {
-            if (c.getEmail().equals(customer)) {
-                try {
-                    currentUserId = c.getId();
-                    System.out.println("Successfully connected. Your id: " + currentUserId);
-                    displayMenu();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+    private void findUser(String customer) {
+        try {
+            customerRepository.getAll().forEach(c -> {
+                if (c.getEmail().equals(customer)) {
+                    try {
+                        currentUserId = c.getId();
+                        System.out.println("Successfully connected. Your id: " + currentUserId);
+                        displayMenu();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Invalid user.");
     }
 
 
     public void displayMenu() throws SQLException {
         clearScreen();
-        int option;
-        do {
-            System.out.printf(
-                    "Please choose an option:%n" +
-                            "1. Rent car%n" +
-                            "2. Reserve car%n" +
-                            "3. Car list%n" +
-                            "0. Exit%n" +
-                            "Enter your choice (1-5): ");
-            option = scanner.nextInt();
-            clearScreen();
+        try (Scanner scanner = new Scanner(System.in)) {
+            int option;
+            do {
+                System.out.printf(
+                        "Please choose an option:%n" +
+                                "1. Rent car%n" +
+                                "2. Reserve car%n" +
+                                "3. Car list%n" +
+                                "0. Exit%n" +
+                                "Enter your choice (1-5): ");
+                option = scanner.nextInt();
+                clearScreen();
 
-            switch (option) {
-                case 1 -> {
-                    TablePrinter.printTable("Cars", carRepository.getAll());
-                    handle("Rent", rentRepository);
+                switch (option) {
+                    case 1 -> {
+                        TablePrinter.printTable("Cars", carRepository.getAll());
+                        handle("Rent", rentRepository);
+                    }
+                    case 2 -> {
+                        TablePrinter.printTable("Cars", carRepository.getAll());
+                        handle("Reservation", reservationRepository);
+                    }
+                    case 3 -> TablePrinter.printTable("Cars", carRepository.getAll());
+                    case 0 -> {
+                        System.out.println("Exiting the system. Goodbye!");
+                        System.exit(0);
+                    }
+                    default -> System.out.println("Invalid option. Please try again.");
                 }
-                case 2 -> {
-                    TablePrinter.printTable("Cars", carRepository.getAll());
-                    handle("Reservation", reservationRepository);
-                }
-                case 3 -> TablePrinter.printTable("Cars", carRepository.getAll());
-                case 0 -> {
-                    System.out.println("Exiting the system. Goodbye!");
-                    System.exit(0);
-                }
-                default -> System.out.println("Invalid option. Please try again.");
-            }
-        } while (true);
+            } while (true);
+        }
+
     }
 
 
-    private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) throws SQLException {
+    private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) {
         clearScreen();
-        int option;
-        do {
-            TablePrinter.printTable(title, repository.getAll());
-            System.out.printf(("Choose an operation:%%n" +
-                    "1. Add new%%n" +
-                    "2. Search%%n" +
-                    "3. Your %s%%n" +
-                    "0. Go back%%n" +
-                    "Enter your choice (1-5): ")
-                    .formatted(title));
-            option = scanner.nextInt();
-            clearScreen();
+        try (Scanner scanner = new Scanner(System.in)) {
+            int option;
+            do {
+                TablePrinter.printTable(title, repository.getAll());
+                System.out.printf(("Choose an operation:%%n" +
+                        "1. Add new%%n" +
+                        "2. Search%%n" +
+                        "3. Your %s%%n" +
+                        "0. Go back%%n" +
+                        "Enter your choice (1-5): ")
+                        .formatted(title));
+                option = scanner.nextInt();
+                clearScreen();
 
-            switch (option) {
-                case 1 -> repository.enter(repository.askInsert(currentUserId));
-                case 2 -> {
-                    TablePrinter.printTable(title, repository.getAll());
-                    TablePrinter.printTable("Found " + title, repository.search(repository.askSearch()));
+                switch (option) {
+                    case 1 -> repository.enter(repository.askInsert(currentUserId));
+                    case 2 -> {
+                        TablePrinter.printTable(title, repository.getAll());
+                        TablePrinter.printTable("Found " + title, repository.search(repository.askSearch()));
+                    }
+                    case 3 -> myRepository(title, repository);
+                    case 0 -> displayMenu();
+                    default -> System.out.println("Invalid option. Please try again.");
                 }
-                case 3 -> myRepository(title, repository);
-                case 0 -> displayMenu();
-                default -> System.out.println("Invalid option. Please try again.");
-            }
-        } while (true);
+            } while (true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public <T extends PrintableTable> void myRepository(String title, BaseRepository<T> repository) throws SQLException {
+    public <T extends PrintableTable> void myRepository(String title, BaseRepository<T> repository) {
         clearScreen();
-        int option;
-        do {
-            TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
-            System.out.printf("Choose an operation:%n" +
-                    "1. Update%n" +
-                    "2. Delete%n" +
-                    "0. Go back%n" +
-                    "Enter your choice (1-5): ");
-            option = scanner.nextInt();
-            clearScreen();
+        try (Scanner scanner = new Scanner(System.in)) {
+            int option;
+            do {
+                TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
+                System.out.printf("Choose an operation:%n" +
+                        "1. Update%n" +
+                        "2. Delete%n" +
+                        "0. Go back%n" +
+                        "Enter your choice (1-5): ");
+                option = scanner.nextInt();
+                clearScreen();
 
-            switch (option) {
-                case 1 -> {
-                    TablePrinter.printTable("Cars", carRepository.getAll());
-                    int id = repository.getId();
-                    if (id != 0) {
-                        repository.update(id, repository.askInsert(currentUserId));
+                switch (option) {
+                    case 1 -> {
+                        TablePrinter.printTable("Cars", carRepository.getAll());
+                        int id = repository.getId();
+                        if (id != 0) {
+                            repository.update(id, repository.askInsert(currentUserId));
+                        }
                     }
-                }
-                case 2 -> {
-                    int id = repository.getId();
-                    if (id != 0 && (id == currentUserId)) {
-                        repository.delete(currentUserId);
+                    case 2 -> {
+                        int id = repository.getId();
+                        if (id != 0 && (id == currentUserId)) {
+                            repository.delete(currentUserId);
 
+                        }
                     }
+                    case 0 -> handle(title, repository);
+                    default -> System.out.println("Invalid option. Please try again.");
                 }
-                case 0 -> handle(title, repository);
-                default -> System.out.println("Invalid option. Please try again.");
-            }
-        } while (true);
+            } while (true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
