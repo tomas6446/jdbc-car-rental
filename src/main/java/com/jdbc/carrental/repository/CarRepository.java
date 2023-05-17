@@ -8,6 +8,7 @@ import com.jdbc.carrental.printer.PrintableTable;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Tomas Kozakas
@@ -57,7 +58,7 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public Car askInsert(int currentUserId) {
+    public Optional<Car> askInsert(int currentUserId) {
         System.out.print("Manufacturer: ");
         String manufacturer = scanner.nextLine();
         System.out.print("Model: ");
@@ -66,6 +67,6 @@ public class CarRepository extends BaseRepository<Car> {
         int year = scanner.nextInt();
         System.out.print("Daily rate: ");
         double daily_rate = scanner.nextDouble();
-        return new Car(manufacturer, model, year, daily_rate);
+        return Optional.of(new Car(manufacturer, model, year, daily_rate));
     }
 }

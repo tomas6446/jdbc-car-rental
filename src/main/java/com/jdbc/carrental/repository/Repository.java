@@ -5,6 +5,7 @@ import com.jdbc.carrental.printer.PrintableTable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Tomas Kozakas
@@ -22,5 +23,5 @@ public interface Repository<T> {
 
     void delete(int id) throws SQLException;
 
-    T askInsert(int currentUserId);
+    Optional<T> askInsert(int currentUserId);
 }

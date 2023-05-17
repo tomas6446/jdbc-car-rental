@@ -6,6 +6,7 @@ import com.jdbc.carrental.model.Rent;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Tomas Kozakas
@@ -64,12 +65,15 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public Rent askInsert(int currentUserId) {
+    public Optional<Rent> askInsert(int currentUserId) {
+        System.out.println("0 to cancel");
         System.out.print("Car id: ");
         int carId = scanner.nextInt();
-
+        if(carId == 0) {
+          return Optional.empty();
+        }
         DateInput dateInput = getDate(scanner);
-        return new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate());
+        return Optional.of(new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate()));
     }
 
 }

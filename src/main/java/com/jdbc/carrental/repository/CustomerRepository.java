@@ -7,6 +7,7 @@ import com.jdbc.carrental.model.Customer;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Tomas Kozakas
@@ -55,13 +56,13 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public Customer askInsert(int currentUserId) {
+    public Optional<Customer> askInsert(int currentUserId) {
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Email: ");
         String email = scanner.nextLine();
         System.out.print("Phone number: ");
         String number = scanner.nextLine();
-        return new Customer(name, email, number);
+        return Optional.of(new Customer(name, email, number));
     }
 }

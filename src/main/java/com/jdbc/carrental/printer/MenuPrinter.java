@@ -9,6 +9,7 @@ import com.jdbc.carrental.model.Customer;
 import com.jdbc.carrental.repository.*;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -54,13 +55,14 @@ public class MenuPrinter {
     }
 
     private void register() throws SQLException {
-        Customer customer = customerRepository.askInsert(currentUserId);
-        customerRepository.enter(customer);
-
-        findUser(customer.getEmail());
+        Optional<Customer> customer = customerRepository.askInsert(currentUserId);
+        if(customer.isPresent()) {
+            customerRepository.enter(customer.get());
+            findUser(customer.get().getEmail());
+        }
     }
 
-    private void login() throws SQLException {
+    private void login() {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Customer email: ");
             String email = scanner.nextLine();
@@ -131,7 +133,6 @@ public class MenuPrinter {
         try (Scanner scanner = new Scanner(System.in)) {
             int option;
             do {
-                TablePrinter.printTable(title, repository.getAll());
                 System.out.printf(("Choose an operation:%%n" +
                         "1. Add new%%n" +
                         "2. Search%%n" +
@@ -143,7 +144,13 @@ public class MenuPrinter {
                 clearScreen();
 
                 switch (option) {
-                    case 1 -> repository.enter(repository.askInsert(currentUserId));
+                    case 1 -> {
+                        TablePrinter.printTable(title, repository.getAll());
+                        Optional<T> value = repository.askInsert(currentUserId);
+                        if (value.isPresent()) {
+                            repository.enter(value.get());
+                        }
+                    }
                     case 2 -> {
                         TablePrinter.printTable(title, repository.getAll());
                         TablePrinter.printTable("Found " + title, repository.search(repository.askSearch()));
@@ -178,14 +185,17 @@ public class MenuPrinter {
                         TablePrinter.printTable("Cars", carRepository.getAll());
                         int id = repository.getId();
                         if (id != 0) {
-                            repository.update(id, repository.askInsert(currentUserId));
+                            Optional<T> value = repository.askInsert(currentUserId);
+                            if(value.isPresent()) {
+                                repository.update(id, value.get());
+                            }
+
                         }
                     }
                     case 2 -> {
                         int id = repository.getId();
                         if (id != 0 && (id == currentUserId)) {
                             repository.delete(currentUserId);
-
                         }
                     }
                     case 0 -> handle(title, repository);

@@ -6,6 +6,7 @@ import com.jdbc.carrental.model.Reservation;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Tomas Kozakas
@@ -64,11 +65,15 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public Reservation askInsert(int currentUserId) {
+    public Optional<Reservation> askInsert(int currentUserId) {
         System.out.println("0 to cancel");
         System.out.print("Car id: ");
         int carId = scanner.nextInt();
+        if (carId == 0) {
+            return Optional.empty();
+        }
+
         DateInput date = getDate(scanner);
-        return new Reservation(carId, currentUserId, date.startDate(), date.endDate());
+        return Optional.of(new Reservation(carId, currentUserId, date.startDate(), date.endDate()));
     }
 }
