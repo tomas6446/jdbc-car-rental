@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,21 +14,29 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reservation implements PrintableTable {
-    private Integer reservationId;
+    private Integer id;
+    private Integer customerId;
+    private Integer carId;
     private String carModel;
-    private String customerEmail;
     private Date reservationDate;
     private Date expirationDate;
 
+    public Reservation(int carId, int currentUserId, Date reservationDate, Date expirationDate) {
+        this.carId = carId;
+        this.customerId = currentUserId;
+        this.reservationDate = reservationDate;
+        this.expirationDate = expirationDate;
+    }
+
     @Override
     public String header() {
-        return String.format("| %-16s | %-10s | %-30s | %-16s | %-16s |",
-                "reservation_id", "car_model", "customer_email", "reservation_date", "expiration_date");
+        return String.format("| %-16s | %-12s | %-16s | %-16s |",
+                "id", "model", "reservation_date", "expiration_date");
     }
 
     @Override
     public String toTableRow() {
-        return String.format("| %-16d | %-10s | %-30s | %-16s | %-16s |",
-                reservationId, carModel, customerEmail, reservationDate, expirationDate);
+        return String.format("| %-16d | %-12s | %-16s | %-16s |",
+                id, carModel, reservationDate, expirationDate);
     }
 }

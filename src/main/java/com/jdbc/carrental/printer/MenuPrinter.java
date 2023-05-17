@@ -70,7 +70,7 @@ public class MenuPrinter {
         customerRepository.getAll().forEach(c -> {
             if (c.getEmail().equals(customer)) {
                 try {
-                    currentUserId = c.getCustomerId();
+                    currentUserId = c.getId();
                     System.out.println("Successfully connected. Your id: " + currentUserId);
                     displayMenu();
                 } catch (SQLException e) {
@@ -83,9 +83,9 @@ public class MenuPrinter {
 
 
     public void displayMenu() throws SQLException {
+        clearScreen();
         int option;
         do {
-            clearScreen();
             System.out.printf(
                     "Please choose an option:%n" +
                             "1. Rent car%n" +
@@ -95,6 +95,7 @@ public class MenuPrinter {
                             "Enter your choice (1-5): ");
             option = scanner.nextInt();
             clearScreen();
+
             switch (option) {
                 case 1 -> {
                     TablePrinter.printTable("Cars", carRepository.getAll());
@@ -116,34 +117,62 @@ public class MenuPrinter {
 
 
     private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) throws SQLException {
+        clearScreen();
         int option;
         do {
             TablePrinter.printTable(title, repository.getAll());
-
-            System.out.printf("Choose an operation:%n" +
-                    "1. Add new%n" +
-                    "2. Search%n" +
-                    "3. Update%n" +
-                    "4. Delete%n" +
-                    "0. Go back%n" +
-                    "Enter your choice (1-5): ");
+            System.out.printf(("Choose an operation:%%n" +
+                    "1. Add new%%n" +
+                    "2. Search%%n" +
+                    "3. Your %s%%n" +
+                    "0. Go back%%n" +
+                    "Enter your choice (1-5): ")
+                    .formatted(title));
             option = scanner.nextInt();
+            clearScreen();
 
             switch (option) {
                 case 1 -> repository.enter(repository.askInsert(currentUserId));
-                case 2 -> TablePrinter.printTable(title, repository.search(repository.askSearch()));
-                case 3 -> {
-                    TablePrinter.printTable("Cars", carRepository.getAll());
-                    TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
-                    repository.update(repository.getId(), repository.askInsert(currentUserId));
+                case 2 -> {
+                    TablePrinter.printTable(title, repository.getAll());
+                    TablePrinter.printTable("Found " + title, repository.search(repository.askSearch()));
                 }
-                case 4 -> {
-                    TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
-                    if (repository.getId() == currentUserId) {
-                        repository.delete(currentUserId);
+                case 3 -> myRepository(title, repository);
+                case 0 -> displayMenu();
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        } while (true);
+    }
+
+    public <T extends PrintableTable> void myRepository(String title, BaseRepository<T> repository) throws SQLException {
+        clearScreen();
+        int option;
+        do {
+            TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
+            System.out.printf("Choose an operation:%n" +
+                    "1. Update%n" +
+                    "2. Delete%n" +
+                    "0. Go back%n" +
+                    "Enter your choice (1-5): ");
+            option = scanner.nextInt();
+            clearScreen();
+
+            switch (option) {
+                case 1 -> {
+                    TablePrinter.printTable("Cars", carRepository.getAll());
+                    int id = repository.getId();
+                    if (id != 0) {
+                        repository.update(id, repository.askInsert(currentUserId));
                     }
                 }
-                case 0 -> displayMenu();
+                case 2 -> {
+                    int id = repository.getId();
+                    if (id != 0 && (id == currentUserId)) {
+                        repository.delete(currentUserId);
+
+                    }
+                }
+                case 0 -> handle(title, repository);
                 default -> System.out.println("Invalid option. Please try again.");
             }
         } while (true);

@@ -19,13 +19,17 @@ public class RentRepository extends BaseRepository<Rent> {
 
     @Override
     public List<Rent> getAll() throws SQLException {
-        return executeQuery("SELECT * FROM rent", rentMapper::map);
+        return executeQuery("SELECT rent_id, car.model, " +
+                "rent_date, return_date, amount_paid FROM rent " +
+                "JOIN car ON rent.car_id = car.car_id", rentMapper::map);
     }
 
     @Override
     public List<Rent> getAll(int currentUserId) throws SQLException {
-        return executeQuery("SELECT * FROM rent " +
-                "WHERE customer_id = " + currentUserId, rentMapper::map);
+        return executeQuery("SELECT rent_id, car.model, " +
+                "rent_date, return_date, amount_paid FROM rent " +
+                "JOIN car ON rent.car_id = car.car_id " +
+                "WHERE rent.customer_id = " + currentUserId, rentMapper::map);
     }
 
     @Override
@@ -37,7 +41,10 @@ public class RentRepository extends BaseRepository<Rent> {
 
     @Override
     public List<Rent> search(SearchParam searchParam) throws SQLException {
-        return executeQuery("SELECT * FROM rent WHERE " + searchParam.column() + searchParam.like(), rentMapper::map);
+        return executeQuery("SELECT rent_id, car.model, " +
+                "rent_date, return_date, amount_paid FROM rent " +
+                "JOIN car ON rent.car_id = car.car_id " +
+                "WHERE " + searchParam.column() + searchParam.like(), rentMapper::map);
     }
 
     @Override
