@@ -7,12 +7,14 @@ import com.jdbc.carrental.model.Rent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
  */
 public class RentRepository extends BaseRepository<Rent> {
     private final RentMapper rentMapper;
+
     public RentRepository(DatabaseConnection databaseConnection, RentMapper rentMapper) {
         super(databaseConnection);
         this.rentMapper = rentMapper;
@@ -61,19 +63,21 @@ public class RentRepository extends BaseRepository<Rent> {
 
     @Override
     public void delete(int id) throws SQLException {
-        executeDelete("rent", "rent_id", id);
+        executeUpdate("DELETE FROM rent WHERE rent_id = " + id);
     }
 
     @Override
     public Optional<Rent> askInsert(int currentUserId) {
-        System.out.println("0 to cancel");
-        System.out.print("Car id: ");
-        int carId = scanner.nextInt();
-        if(carId == 0) {
-          return Optional.empty();
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("0 to cancel");
+            System.out.print("Car id: ");
+            int carId = scanner.nextInt();
+            if (carId == 0) {
+                return Optional.empty();
+            }
+            DateInput dateInput = getDate(scanner);
+            return Optional.of(new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate()));
         }
-        DateInput dateInput = getDate(scanner);
-        return Optional.of(new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate()));
     }
 
 }

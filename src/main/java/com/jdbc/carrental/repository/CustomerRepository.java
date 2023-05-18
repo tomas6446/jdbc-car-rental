@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -52,17 +53,19 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void delete(int id) throws SQLException {
-        executeDelete("customer", "customer_id", id);
+        executeUpdate("DELETE FROM customer WHERE customer_id = " + id);
     }
 
     @Override
     public Optional<Customer> askInsert(int currentUserId) {
-        System.out.print("Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Email: ");
-        String email = scanner.nextLine();
-        System.out.print("Phone number: ");
-        String number = scanner.nextLine();
-        return Optional.of(new Customer(name, email, number));
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Name: ");
+            String name = scanner.nextLine();
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
+            System.out.print("Phone number: ");
+            String number = scanner.nextLine();
+            return Optional.of(new Customer(name, email, number));
+        }
     }
 }

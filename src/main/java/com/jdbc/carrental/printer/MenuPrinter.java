@@ -32,23 +32,23 @@ public class MenuPrinter {
     public void start() {
         clearScreen();
         try (Scanner scanner = new Scanner(System.in)) {
-            int choice;
+            int option;
             do {
                 System.out.println("Please choose an option:");
                 System.out.println("1. Login");
                 System.out.println("2. Register");
                 System.out.println("0. Exit");
                 System.out.print("Enter your choice (0-2): ");
-                choice = scanner.nextInt();
+                option = scanner.nextInt();
 
-                switch (choice) {
+                switch (option) {
                     case 1 -> login();
                     case 2 -> register();
                     case 0 -> System.out.println("Exiting the system. Goodbye!");
                     default -> System.out.println("Invalid choice. Please try again.");
                 }
                 System.out.println();
-            } while (choice != 0);
+            } while (option != 0);
         } catch (SQLException e) {
             System.out.println("An error occurred. Please try again later");
         }
@@ -56,9 +56,10 @@ public class MenuPrinter {
 
     private void register() throws SQLException {
         Optional<Customer> customer = customerRepository.askInsert(currentUserId);
-        if(customer.isPresent()) {
+        if (customer.isPresent()) {
             customerRepository.enter(customer.get());
             findUser(customer.get().getEmail());
+            displayMenu();
         }
     }
 
@@ -74,22 +75,21 @@ public class MenuPrinter {
     private void findUser(String customer) {
         try {
             customerRepository.getAll().forEach(c -> {
-                if (c.getEmail().equals(customer)) {
-                    try {
+                try {
+                    if (c.getEmail().equals(customer)) {
                         currentUserId = c.getId();
                         System.out.println("Successfully connected. Your id: " + currentUserId);
+
                         displayMenu();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
                     }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             });
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Invalid user.");
         }
-        System.out.println("Invalid user.");
     }
-
 
     public void displayMenu() throws SQLException {
         clearScreen();
@@ -101,7 +101,7 @@ public class MenuPrinter {
                                 "1. Rent car%n" +
                                 "2. Reserve car%n" +
                                 "3. Car list%n" +
-                                "0. Exit%n" +
+                                "0. Log out%n" +
                                 "Enter your choice (1-5): ");
                 option = scanner.nextInt();
                 clearScreen();
@@ -116,15 +116,11 @@ public class MenuPrinter {
                         handle("Reservation", reservationRepository);
                     }
                     case 3 -> TablePrinter.printTable("Cars", carRepository.getAll());
-                    case 0 -> {
-                        System.out.println("Exiting the system. Goodbye!");
-                        System.exit(0);
-                    }
+                    case 0 -> displayMenu();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
-            } while (true);
+            } while (option != 0);
         }
-
     }
 
 
@@ -147,6 +143,7 @@ public class MenuPrinter {
                 switch (option) {
                     case 1 -> {
                         TablePrinter.printTable(title, repository.getAll());
+                        TablePrinter.printTable("Cars", carRepository.getAll());
                         Optional<T> value = repository.askInsert(currentUserId);
                         if (value.isPresent()) {
                             repository.enter(value.get());
@@ -190,13 +187,14 @@ public class MenuPrinter {
                         int id = repository.getId();
                         if (id != 0) {
                             Optional<T> value = repository.askInsert(currentUserId);
-                            if(value.isPresent()) {
+                            if (value.isPresent()) {
                                 repository.update(id, value.get());
                             }
                         }
                         clearScreen();
                     }
                     case 2 -> {
+                        TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
                         int id = repository.getId();
                         if (id != 0 && (id == currentUserId)) {
                             repository.delete(currentUserId);
