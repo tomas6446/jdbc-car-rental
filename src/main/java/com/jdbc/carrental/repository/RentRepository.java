@@ -21,14 +21,14 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public List<Rent> getAll() throws SQLException {
+    public List<Rent> getAll() {
         return executeQuery("SELECT rent_id, car.model, " +
                 "rent_date, return_date, amount_paid FROM rent " +
                 "JOIN car ON rent.car_id = car.car_id", rentMapper::map);
     }
 
     @Override
-    public List<Rent> getAll(int currentUserId) throws SQLException {
+    public List<Rent> getAll(int currentUserId) {
         return executeQuery("SELECT rent_id, car.model, " +
                 "rent_date, return_date, amount_paid FROM rent " +
                 "JOIN car ON rent.car_id = car.car_id " +
@@ -36,14 +36,14 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public void enter(Rent rent) throws SQLException {
+    public void enter(Rent rent) {
         executeInsert("INSERT INTO rent (car_id, customer_id, rent_date, return_date) " +
                 "VALUES (" + rent.getCarId() + ", " + rent.getCustomerId() + ", '" + rent.getRentDate() +
                 "', '" + rent.getReturnDate() + "')");
     }
 
     @Override
-    public List<Rent> search(SearchParam searchParam) throws SQLException {
+    public List<Rent> search(SearchParam searchParam) {
         return executeQuery("SELECT rent_id, car.model, " +
                 "rent_date, return_date, amount_paid FROM rent " +
                 "JOIN car ON rent.car_id = car.car_id " +
@@ -51,7 +51,7 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public void update(int id, Rent rent) throws SQLException {
+    public void update(int id, Rent rent) {
         executeUpdate("UPDATE rent SET " +
                 "car_id = " + rent.getCarId() +
                 ", customer_id = " + rent.getCustomerId() +
@@ -62,7 +62,7 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         executeUpdate("DELETE FROM rent WHERE rent_id = " + id);
     }
 

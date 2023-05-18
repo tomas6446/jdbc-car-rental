@@ -17,6 +17,8 @@ public class DatabaseConnection {
     private String schema;
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url + "?currentSchema=" + schema, username, password);
+        Connection connection = DriverManager.getConnection(url + "?currentSchema=" + schema, username, password);
+        connection.setAutoCommit(false);
+        return connection;
     }
 }

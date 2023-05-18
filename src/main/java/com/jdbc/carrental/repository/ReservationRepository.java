@@ -21,14 +21,14 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public List<Reservation> getAll() throws SQLException {
+    public List<Reservation> getAll() {
         return executeQuery("SELECT reservation.reservation_id, car.model, " +
                 "reservation.reservation_date, reservation.expiration_date FROM reservation " +
                 "JOIN car ON reservation.car_id = car.car_id", reservationMapper::map);
     }
 
     @Override
-    public List<Reservation> getAll(int currentUserId) throws SQLException {
+    public List<Reservation> getAll(int currentUserId) {
         return executeQuery("SELECT reservation.reservation_id, car.model, " +
                 "reservation.reservation_date, reservation.expiration_date FROM reservation " +
                 "JOIN car ON reservation.car_id = car.car_id " +
@@ -36,14 +36,14 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public void enter(Reservation reservation) throws SQLException {
+    public void enter(Reservation reservation) {
         executeInsert("INSERT INTO reservation (car_id, customer_id, reservation_date, expiration_date) " +
                 "VALUES (" + reservation.getCarId() + ", " + reservation.getCustomerId() + ", '" + reservation.getReservationDate() +
                 "', '" + reservation.getExpirationDate() + "')");
     }
 
     @Override
-    public List<Reservation> search(SearchParam searchParam) throws SQLException {
+    public List<Reservation> search(SearchParam searchParam) {
         return executeQuery("SELECT reservation.reservation_id, car.model, " +
                 "reservation.reservation_date, reservation.expiration_date FROM reservation " +
                 "JOIN car ON reservation.car_id = car.car_id " +
@@ -52,7 +52,7 @@ public class ReservationRepository extends BaseRepository<Reservation> {
 
 
     @Override
-    public void update(int id, Reservation reservation) throws SQLException {
+    public void update(int id, Reservation reservation) {
         executeUpdate("UPDATE reservation SET " +
                 "car_id = " + reservation.getCarId() +
                 ", customer_id = " + reservation.getCustomerId() +
@@ -62,7 +62,7 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         executeUpdate("DELETE FROM reservation WHERE reservation_id = " + id);
     }
 

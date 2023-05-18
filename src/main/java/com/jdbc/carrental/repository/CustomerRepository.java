@@ -22,7 +22,7 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public List<Customer> getAll() throws SQLException {
+    public List<Customer> getAll()  {
         return executeQuery("SELECT * FROM customer", customerMapper::map);
     }
 
@@ -32,18 +32,18 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public void enter(Customer customer) throws SQLException {
+    public void enter(Customer customer) {
         executeInsert("INSERT INTO customer (name, email, phone) " +
                 "VALUES ('" + customer.getName() + "', '" + customer.getEmail() + "', '" + customer.getPhone() + "')");
     }
 
     @Override
-    public List<Customer> search(SearchParam searchParam) throws SQLException {
+    public List<Customer> search(SearchParam searchParam) {
         return executeQuery("SELECT * FROM customer WHERE " + searchParam.column() + searchParam.like(), customerMapper::map);
     }
 
     @Override
-    public void update(int id, Customer customer) throws SQLException {
+    public void update(int id, Customer customer) {
         executeUpdate("UPDATE customer " +
                 "SET name = '" + customer.getName() + "', " +
                 "email = '" + customer.getEmail() + "', " +
@@ -52,7 +52,7 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         executeUpdate("DELETE FROM customer WHERE customer_id = " + id);
     }
 

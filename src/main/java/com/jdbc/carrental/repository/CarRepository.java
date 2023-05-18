@@ -4,7 +4,6 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.CarMapper;
 import com.jdbc.carrental.model.Car;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public List<Car> getAll() throws SQLException {
+    public List<Car> getAll() {
         return executeQuery("SELECT * FROM car", carMapper::map);
     }
 
@@ -32,19 +31,19 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public void enter(Car car) throws SQLException {
+    public void enter(Car car) {
         executeInsert("INSERT INTO car (manufacturer, model, year, daily_rate) " +
                 "VALUES ('" + car.getManufacturer() + "', '" + car.getModel() + "', '" + car.getYear() + "', '" + car.getDailyRate() + "')");
     }
 
     @Override
-    public List<Car> search(SearchParam searchParam) throws SQLException {
+    public List<Car> search(SearchParam searchParam) {
         return executeQuery("SELECT * FROM reservation WHERE " + searchParam.column() + searchParam.like(),
                 carMapper::map);
     }
 
     @Override
-    public void update(int id, Car car) throws SQLException {
+    public void update(int id, Car car) {
         executeUpdate("UPDATE car " +
                 "SET manufacturer = '" + car.getManufacturer() + "', " +
                 "model = '" + car.getModel() + "', " +
@@ -54,7 +53,7 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public void delete(int id) {
         executeUpdate("DELETE FROM car WHERE car_id = " + id);
     }
 

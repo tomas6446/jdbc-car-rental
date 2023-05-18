@@ -29,7 +29,7 @@ public abstract class BaseRepository<T> implements Repository<T> {
         }
     }
 
-    protected List<T> executeQuery(String query, Function<ResultSet, T> resultSetMapper) throws SQLException {
+    protected List<T> executeQuery(String query, Function<ResultSet, T> resultSetMapper) {
         List<T> results = new ArrayList<>();
         ResultSet resultSet;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -37,20 +37,39 @@ public abstract class BaseRepository<T> implements Repository<T> {
             while (resultSet.next()) {
                 results.add(resultSetMapper.apply(resultSet));
             }
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
         }
         return results;
     }
 
-
-    protected void executeInsert(String query) throws SQLException {
+    protected void executeInsert(String query) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
         }
     }
 
-    protected void executeUpdate(String query) throws SQLException {
+    protected void executeUpdate(String query) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+    }
+
+    protected void rollbackTransaction() {
+        if (connection != null) {
+            try {
+                System.err.print("Transaction is being rolled back");
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new RuntimeException();
+            }
         }
     }
 
