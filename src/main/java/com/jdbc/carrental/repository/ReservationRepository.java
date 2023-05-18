@@ -4,7 +4,6 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.ReservationMapper;
 import com.jdbc.carrental.model.Reservation;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;

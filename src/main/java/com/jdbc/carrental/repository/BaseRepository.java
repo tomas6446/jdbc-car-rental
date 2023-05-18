@@ -1,6 +1,7 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
+import com.jdbc.carrental.model.Car;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
