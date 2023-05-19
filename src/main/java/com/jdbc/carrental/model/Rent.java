@@ -32,7 +32,7 @@ public class Rent implements PrintableTable {
     @Override
     public String header() {
         return String.format("| %-8s | %-9s | %-12s | %-12s | $%-10s |",
-                "id", "model" , "rent_date", "return_date", "amount_paid");
+                "id", "model", "rent_date", "return_date", "amount_paid");
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.model.Car;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +19,7 @@ import java.util.function.Function;
  * @author Tomas Kozakas
  */
 public abstract class BaseRepository<T> implements Repository<T> {
-    private Connection connection;
+    protected Connection connection;
 
     protected BaseRepository(DatabaseConnection databaseConnection) {
         try {
@@ -30,10 +29,10 @@ public abstract class BaseRepository<T> implements Repository<T> {
         }
     }
 
-    protected List<T> executeQuery(String query, Function<ResultSet, T> resultSetMapper) {
+    protected List<T> executeQuery(PreparedStatement preparedStatement, Function<ResultSet, T> resultSetMapper) {
         List<T> results = new ArrayList<>();
         ResultSet resultSet;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 results.add(resultSetMapper.apply(resultSet));
@@ -43,24 +42,6 @@ public abstract class BaseRepository<T> implements Repository<T> {
             rollbackTransaction();
         }
         return results;
-    }
-
-    protected void executeInsert(String query) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            rollbackTransaction();
-        }
-    }
-
-    protected void executeUpdate(String query) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            rollbackTransaction();
-        }
     }
 
     protected void rollbackTransaction() {

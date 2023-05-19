@@ -4,6 +4,8 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.CarMapper;
 import com.jdbc.carrental.model.Car;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +23,13 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public List<Car> getAll() {
-        return executeQuery("SELECT * FROM car", carMapper::map);
+    public List<Car> getAll()  {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM car")) {
+            return executeQuery(preparedStatement, carMapper::map);
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -32,29 +39,58 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public void enter(Car car) {
-        executeInsert("INSERT INTO car (manufacturer, model, year, daily_rate) " +
-                "VALUES ('" + car.getManufacturer() + "', '" + car.getModel() + "', '" + car.getYear() + "', '" + car.getDailyRate() + "')");
-    }
-
-    @Override
-    public List<Car> search(SearchParam searchParam) {
-        return executeQuery("SELECT * FROM reservation WHERE " + searchParam.column() + searchParam.like(),
-                carMapper::map);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO car (manufacturer, model, year, daily_rate) VALUES (?, ?, ?, ?)")) {
+            preparedStatement.setString(1, car.getManufacturer());
+            preparedStatement.setString(2, car.getModel());
+            preparedStatement.setInt(3, car.getYear());
+            preparedStatement.setDouble(4, car.getDailyRate());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
     }
 
     @Override
     public void update(int id, Car car) {
-        executeUpdate("UPDATE car " +
-                "SET manufacturer = '" + car.getManufacturer() + "', " +
-                "model = '" + car.getModel() + "', " +
-                "year = " + car.getYear() + ", " +
-                "daily_rate = " + car.getDailyRate() + " " +
-                "WHERE car_id = " + id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "UPDATE car SET manufacturer = ?, model = ?, year = ?, daily_rate = ? WHERE car_id = ?")) {
+            preparedStatement.setString(1, car.getManufacturer());
+            preparedStatement.setString(2, car.getModel());
+            preparedStatement.setInt(3, car.getYear());
+            preparedStatement.setDouble(4, car.getDailyRate());
+            preparedStatement.setInt(5, id);
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
     }
 
     @Override
     public void delete(int id) {
-        executeUpdate("DELETE FROM car WHERE car_id = " + id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM car WHERE car_id = ?")) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+    }
+
+
+    @Override
+    public List<Car> search(SearchParam searchParam) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM reservation WHERE " + searchParam.column() + " LIKE ?")) {
+            preparedStatement.setString(1, "%" + searchParam.like() + "%");
+            return executeQuery(preparedStatement, carMapper::map);
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+        return Collections.emptyList();
     }
 
     @Override

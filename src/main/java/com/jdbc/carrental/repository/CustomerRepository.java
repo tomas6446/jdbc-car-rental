@@ -4,6 +4,8 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.CustomerMapper;
 import com.jdbc.carrental.model.Customer;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +23,13 @@ public class CustomerRepository extends BaseRepository<Customer> {
     }
 
     @Override
-    public List<Customer> getAll()  {
-        return executeQuery("SELECT * FROM customer", customerMapper::map);
+    public List<Customer> getAll() {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM customer")) {
+            return executeQuery(preparedStatement, customerMapper::map);
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -32,28 +39,57 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
     @Override
     public void enter(Customer customer) {
-        executeInsert("INSERT INTO customer (name, email, phone) " +
-                "VALUES ('" + customer.getName() + "', '" + customer.getEmail() + "', '" + customer.getPhone() + "')");
-    }
-
-    @Override
-    public List<Customer> search(SearchParam searchParam) {
-        return executeQuery("SELECT * FROM customer WHERE " + searchParam.column() + searchParam.like(), customerMapper::map);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO customer (name, email, phone) VALUES (?, ?, ?)")) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getPhone());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
     }
 
     @Override
     public void update(int id, Customer customer) {
-        executeUpdate("UPDATE customer " +
-                "SET name = '" + customer.getName() + "', " +
-                "email = '" + customer.getEmail() + "', " +
-                "phone = '" + customer.getPhone() + "' " +
-                "WHERE customer_id = " + id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "UPDATE customer SET name = ?, email = ?, phone = ? WHERE customer_id = ?")) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getPhone());
+            preparedStatement.setInt(4, id);
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
     }
 
     @Override
     public void delete(int id) {
-        executeUpdate("DELETE FROM customer WHERE customer_id = " + id);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM customer WHERE customer_id = ?")) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
     }
+
+    @Override
+    public List<Customer> search(SearchParam searchParam) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM customer WHERE " + searchParam.column() + " LIKE ?")) {
+            preparedStatement.setString(1, "%" + searchParam.like() + "%");
+            return executeQuery(preparedStatement, customerMapper::map);
+        } catch (SQLException e) {
+            rollbackTransaction();
+        }
+        return Collections.emptyList();
+    }
+
 
     @Override
     public Optional<Customer> askInsert(int currentUserId) {

@@ -1,8 +1,5 @@
 package com.jdbc.carrental.repository;
 
-import com.jdbc.carrental.model.Reservation;
-import com.jdbc.carrental.printer.PrintableTable;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +10,7 @@ import java.util.Optional;
 public interface Repository<T> {
     List<T> getAll();
 
-    List<T> getAll(int currentUserId) ;
+    List<T> getAll(int currentUserId);
 
     List<T> search(BaseRepository.SearchParam searchParam);
 

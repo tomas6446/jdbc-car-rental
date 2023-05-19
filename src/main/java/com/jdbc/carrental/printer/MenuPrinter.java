@@ -8,7 +8,6 @@ import com.jdbc.carrental.mapper.ReservationMapper;
 import com.jdbc.carrental.model.Customer;
 import com.jdbc.carrental.repository.*;
 
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -27,6 +26,11 @@ public class MenuPrinter {
         this.rentRepository = new RentRepository(databaseConnection, new RentMapper());
         this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationMapper());
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     public void start() {
@@ -106,13 +110,12 @@ public class MenuPrinter {
                         handle("Reservation", reservationRepository);
                     }
                     case 3 -> TablePrinter.printTable("Cars", carRepository.getAll());
-                    case 0 -> displayMenu();
+                    case 0 -> start();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
             } while (option != 0);
         }
     }
-
 
     private <T extends PrintableTable> void handle(String title, BaseRepository<T> repository) {
         clearScreen();
@@ -189,11 +192,5 @@ public class MenuPrinter {
                 }
             } while (true);
         }
-    }
-
-
-    private static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
     }
 }
