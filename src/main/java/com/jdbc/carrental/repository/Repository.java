@@ -1,8 +1,8 @@
 package com.jdbc.carrental.repository;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * @author Tomas Kozakas
@@ -20,5 +20,5 @@ public interface Repository<T> {
 
     void delete(int id);
 
-    Optional<T> askInsert(int currentUserId);
+    Optional<T> askInsert(int currentUserId, Scanner scanner);
 }

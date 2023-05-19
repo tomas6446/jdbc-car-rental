@@ -2,15 +2,11 @@ package com.jdbc.carrental.repository;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
@@ -55,31 +51,17 @@ public abstract class BaseRepository<T> implements Repository<T> {
         }
     }
 
-    public int getId() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Id: ");
-            int id = scanner.nextInt();
-            scanner.nextLine();
-            return id;
-        }
-    }
-
-    protected DateInput getDate(Scanner scanner) {
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date reservationDate = askDate("Start date (format [yyyy-mm-dd]): ", scanner, formatter);
-        Date expirationDate = askDate("End date (format [yyyy-mm-dd]): ", scanner, formatter);
-        return new DateInput(reservationDate, expirationDate);
-    }
-
-    private static Date askDate(String s, Scanner scanner, DateFormat formatter) {
+    private static Date askDate(String s, Scanner scanner) {
         Date date;
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateRegex = "^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$";
         while (true) {
             System.out.print(s);
             String dateString = scanner.next();
             if (dateString.matches(dateRegex)) {
                 try {
-                    date = formatter.parse(dateString);
+                    java.util.Date utilDate = formatter.parse(dateString);
+                    date = new Date(utilDate.getTime());
                     break;
                 } catch (ParseException e) {
                     System.out.println("Wrong date format. Try again");
@@ -91,25 +73,37 @@ public abstract class BaseRepository<T> implements Repository<T> {
         return date;
     }
 
-    public SearchParam askSearch() {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Column: ");
-            String column = scanner.next();
-            System.out.print("Like: ");
-            String like = scanner.next();
+    public int getId(Scanner scanner) {
+        System.out.println("0 to cancel");
+        System.out.print("Id: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        return id;
+    }
 
-            if (isValueInteger(like)) {
-                like = " = " + like;
-            } else if (isValueDate(like)) {
-                like = " = '" + like + "'";
-            } else if (isValueDouble(like)) {
-                like = " = " + like;
-            } else {
-                like = " LIKE '%" + like + "%'";
-            }
+    protected DateInput getDate(Scanner scanner) {
+        Date reservationDate = askDate("Start date (format [yyyy-mm-dd]): ", scanner);
+        Date expirationDate = askDate("End date (format [yyyy-mm-dd]): ", scanner);
+        return new DateInput(reservationDate, expirationDate);
+    }
 
-            return new SearchParam(column, like);
+    public SearchParam askSearch(Scanner scanner) {
+        System.out.print("Column: ");
+        String column = scanner.next();
+        System.out.print("Like: ");
+        String like = scanner.next();
+
+        if (isValueInteger(like)) {
+            like = " = " + like;
+        } else if (isValueDate(like)) {
+            like = " = '" + like + "'";
+        } else if (isValueDouble(like)) {
+            like = " = " + like;
+        } else {
+            like = " LIKE '%" + like + "%'";
         }
+
+        return new SearchParam(column, like);
     }
 
 

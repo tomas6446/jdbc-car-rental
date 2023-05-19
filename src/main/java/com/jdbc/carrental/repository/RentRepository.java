@@ -110,17 +110,15 @@ public class RentRepository extends BaseRepository<Rent> {
     }
 
     @Override
-    public Optional<Rent> askInsert(int currentUserId) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("0 to cancel");
-            System.out.print("Car id: ");
-            int carId = scanner.nextInt();
-            if (carId == 0) {
-                return Optional.empty();
-            }
-            DateInput dateInput = getDate(scanner);
-            return Optional.of(new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate()));
+    public Optional<Rent> askInsert(int currentUserId, Scanner scanner) {
+        System.out.println("0 to cancel");
+        System.out.print("Car id: ");
+        int carId = scanner.nextInt();
+        if (carId == 0) {
+            return Optional.empty();
         }
+        DateInput dateInput = getDate(scanner);
+        return Optional.of(new Rent(carId, currentUserId, dateInput.startDate(), dateInput.endDate()));
     }
 
 }

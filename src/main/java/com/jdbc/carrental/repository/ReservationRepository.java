@@ -4,7 +4,6 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.mapper.ReservationMapper;
 import com.jdbc.carrental.model.Reservation;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -55,8 +54,8 @@ public class ReservationRepository extends BaseRepository<Reservation> {
                 "INSERT INTO reservation (car_id, customer_id, reservation_date, expiration_date) VALUES (?, ?, ?, ?)")) {
             preparedStatement.setInt(1, reservation.getCarId());
             preparedStatement.setInt(2, reservation.getCustomerId());
-            preparedStatement.setDate(3, (Date) reservation.getReservationDate());
-            preparedStatement.setDate(4, (Date) reservation.getExpirationDate());
+            preparedStatement.setDate(3, reservation.getReservationDate());
+            preparedStatement.setDate(4, reservation.getExpirationDate());
             preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -70,8 +69,8 @@ public class ReservationRepository extends BaseRepository<Reservation> {
                 "UPDATE reservation SET car_id = ?, customer_id = ?, reservation_date = ?, expiration_date = ? WHERE reservation_id = ?")) {
             preparedStatement.setInt(1, reservation.getCarId());
             preparedStatement.setInt(2, reservation.getCustomerId());
-            preparedStatement.setDate(3, (Date) reservation.getReservationDate());
-            preparedStatement.setDate(4, (Date) reservation.getExpirationDate());
+            preparedStatement.setDate(3, reservation.getReservationDate());
+            preparedStatement.setDate(4, reservation.getExpirationDate());
             preparedStatement.setInt(5, id);
             preparedStatement.executeUpdate();
             connection.commit();
@@ -107,17 +106,15 @@ public class ReservationRepository extends BaseRepository<Reservation> {
     }
 
     @Override
-    public Optional<Reservation> askInsert(int currentUserId) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("0 to cancel");
-            System.out.print("Car id: ");
-            int carId = scanner.nextInt();
-            if (carId == 0) {
-                return Optional.empty();
-            }
-
-            DateInput date = getDate(scanner);
-            return Optional.of(new Reservation(carId, currentUserId, date.startDate(), date.endDate()));
+    public Optional<Reservation> askInsert(int currentUserId, Scanner scanner) {
+        System.out.println("0 to cancel");
+        System.out.print("Car id: ");
+        int carId = scanner.nextInt();
+        if (carId == 0) {
+            return Optional.empty();
         }
+
+        DateInput date = getDate(scanner);
+        return Optional.of(new Reservation(carId, currentUserId, date.startDate(), date.endDate()));
     }
 }

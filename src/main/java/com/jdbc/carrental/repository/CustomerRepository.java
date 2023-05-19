@@ -92,15 +92,13 @@ public class CustomerRepository extends BaseRepository<Customer> {
 
 
     @Override
-    public Optional<Customer> askInsert(int currentUserId) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Name: ");
-            String name = scanner.nextLine();
-            System.out.print("Email: ");
-            String email = scanner.nextLine();
-            System.out.print("Phone number: ");
-            String number = scanner.nextLine();
-            return Optional.of(new Customer(name, email, number));
-        }
+    public Optional<Customer> askInsert(int currentUserId, Scanner scanner) {
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Phone number: ");
+        String number = scanner.nextLine();
+        return Optional.of(new Customer(name, email, number));
     }
 }

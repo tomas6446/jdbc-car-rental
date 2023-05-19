@@ -57,12 +57,15 @@ public class MenuPrinter {
     }
 
     private void register() {
-        Optional<Customer> customer = customerRepository.askInsert(currentUserId);
-        if (customer.isPresent()) {
-            customerRepository.enter(customer.get());
-            findUser(customer.get().getEmail());
-            displayMenu();
+        try (Scanner scanner = new Scanner(System.in)) {
+            Optional<Customer> customer = customerRepository.askInsert(currentUserId, scanner);
+            if (customer.isPresent()) {
+                customerRepository.enter(customer.get());
+                findUser(customer.get().getEmail());
+                displayMenu();
+            }
         }
+
     }
 
     private void login() {
@@ -121,15 +124,18 @@ public class MenuPrinter {
         clearScreen();
         try (Scanner scanner = new Scanner(System.in)) {
             int option;
+            TablePrinter.printTable("Cars", carRepository.getAll());
             do {
                 TablePrinter.printTable(title, repository.getAll());
-                System.out.printf(("Choose an operation:%%n" +
-                        "1. Add new%%n" +
-                        "2. Search%%n" +
-                        "3. Your %s%%n" +
-                        "0. Go back%%n" +
-                        "Enter your choice (1-5): ")
-                        .formatted(title));
+                System.out.printf(
+                        "Choose an operation:%n" +
+                                "1. Add new%n" +
+                                "2. Search%n" +
+                                "3. Your %s%n" +
+                                "0. Go back%n" +
+                                "Enter your choice (1-5): ",
+                        title
+                );
                 option = scanner.nextInt();
                 clearScreen();
 
@@ -137,13 +143,13 @@ public class MenuPrinter {
                     case 1 -> {
                         TablePrinter.printTable(title, repository.getAll());
                         TablePrinter.printTable("Cars", carRepository.getAll());
-                        Optional<T> value = repository.askInsert(currentUserId);
+                        Optional<T> value = repository.askInsert(currentUserId, scanner);
                         value.ifPresent(repository::enter);
                         clearScreen();
                     }
                     case 2 -> {
                         TablePrinter.printTable(title, repository.getAll());
-                        BaseRepository.SearchParam searchParam = repository.askSearch();
+                        BaseRepository.SearchParam searchParam = repository.askSearch(scanner);
                         clearScreen();
                         TablePrinter.printTable("Found " + title, repository.search(searchParam));
                     }
@@ -151,37 +157,39 @@ public class MenuPrinter {
                     case 0 -> displayMenu();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
-            } while (true);
+            } while (option != 0);
         }
     }
 
     public <T extends PrintableTable> void myRepository(String title, BaseRepository<T> repository) {
         clearScreen();
+        int option;
         try (Scanner scanner = new Scanner(System.in)) {
-            int option;
             do {
                 TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
-                System.out.printf("Choose an operation:%n" +
-                        "1. Update%n" +
-                        "2. Delete%n" +
-                        "0. Go back%n" +
-                        "Enter your choice (1-5): ");
+                System.out.printf(
+                        "Choose an operation:%n" +
+                                "1. Update%n" +
+                                "2. Delete%n" +
+                                "0. Go back%n" +
+                                "Enter your choice (1-5): "
+                );
                 option = scanner.nextInt();
                 clearScreen();
 
                 switch (option) {
                     case 1 -> {
                         TablePrinter.printTable("Cars", carRepository.getAll());
-                        int id = repository.getId();
+                        int id = repository.getId(scanner);
                         if (id != 0) {
-                            Optional<T> value = repository.askInsert(currentUserId);
+                            Optional<T> value = repository.askInsert(currentUserId, scanner);
                             value.ifPresent(t -> repository.update(id, t));
                         }
                         clearScreen();
                     }
                     case 2 -> {
                         TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
-                        int id = repository.getId();
+                        int id = repository.getId(scanner);
                         if (id != 0 && (id == currentUserId)) {
                             repository.delete(currentUserId);
                         }
@@ -190,7 +198,7 @@ public class MenuPrinter {
                     case 0 -> handle(title, repository);
                     default -> System.out.println("Invalid option. Please try again.");
                 }
-            } while (true);
+            } while (option != 0);
         }
     }
 }

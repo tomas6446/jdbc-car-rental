@@ -94,17 +94,15 @@ public class CarRepository extends BaseRepository<Car> {
     }
 
     @Override
-    public Optional<Car> askInsert(int currentUserId) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.print("Manufacturer: ");
-            String manufacturer = scanner.nextLine();
-            System.out.print("Model: ");
-            String model = scanner.nextLine();
-            System.out.print("Year: ");
-            int year = scanner.nextInt();
-            System.out.print("Daily rate: ");
-            double daily_rate = scanner.nextDouble();
-            return Optional.of(new Car(manufacturer, model, year, daily_rate));
-        }
+    public Optional<Car> askInsert(int currentUserId, Scanner scanner) {
+        System.out.print("Manufacturer: ");
+        String manufacturer = scanner.nextLine();
+        System.out.print("Model: ");
+        String model = scanner.nextLine();
+        System.out.print("Year: ");
+        int year = scanner.nextInt();
+        System.out.print("Daily rate: ");
+        double daily_rate = scanner.nextDouble();
+        return Optional.of(new Car(manufacturer, model, year, daily_rate));
     }
 }
