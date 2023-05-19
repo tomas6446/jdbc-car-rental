@@ -5,7 +5,6 @@ import com.jdbc.carrental.connection.DatabaseConnection;
 import com.jdbc.carrental.printer.MenuPrinter;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.sql.SQLException;
 
 public class CarRental {
     public static void main(String[] args) {

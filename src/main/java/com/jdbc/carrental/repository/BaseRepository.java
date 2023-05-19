@@ -43,7 +43,7 @@ public abstract class BaseRepository<T> implements Repository<T> {
     protected void rollbackTransaction() {
         if (connection != null) {
             try {
-                System.err.print("Transaction is being rolled back");
+                System.err.println("Transaction is being rolled back");
                 connection.rollback();
             } catch (SQLException e) {
                 throw new RuntimeException();

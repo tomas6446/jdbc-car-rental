@@ -62,10 +62,8 @@ public class MenuPrinter {
             if (customer.isPresent()) {
                 customerRepository.enter(customer.get());
                 findUser(customer.get().getEmail());
-                displayMenu();
             }
         }
-
     }
 
     private void login() {
@@ -85,7 +83,8 @@ public class MenuPrinter {
                 displayMenu();
             }
         });
-
+        System.out.println("Invalid user.");
+        start();
     }
 
     public void displayMenu() {
