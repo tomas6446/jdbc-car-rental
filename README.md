@@ -1,5 +1,4 @@
 # jdbc-car-rental
-jdbc-car-rental
 
 # Rename .env-template to .env and add your connection
 ```bash
