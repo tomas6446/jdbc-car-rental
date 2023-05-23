@@ -14,7 +14,7 @@ jdbc-car-rental
   scp -r jdbc-car-rental your_username@uosis.mif.vu.lt:path/to/some_folder
 ```
 
-# Running
+# Run
 ```bash
   sudo bash run.sh
 ```
