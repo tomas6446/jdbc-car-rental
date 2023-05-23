@@ -28,11 +28,6 @@ public class MenuPrinter {
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
     }
 
-    private static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
     public void start() {
         clearScreen();
         try (Scanner scanner = new Scanner(System.in)) {
@@ -199,5 +194,10 @@ public class MenuPrinter {
                 }
             } while (option != 0);
         }
+    }
+
+    private void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
