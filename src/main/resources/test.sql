@@ -76,3 +76,7 @@ FROM toko7940.reservation
          JOIN toko7940.customer
               ON reservation.customer_id = customer.customer_id
 WHERE customer.customer_id = 1
+
+SELECT toko7940.car.car_id, reservation_id, toko7940.car.model, reservation_date, expiration_date
+FROM toko7940.reservation
+         JOIN toko7940.car on car.car_id = reservation.car_id

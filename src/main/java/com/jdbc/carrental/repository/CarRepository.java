@@ -24,7 +24,8 @@ public class CarRepository extends BaseRepository<Car> {
 
     @Override
     public List<Car> getAll()  {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM car")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM car")) {
             return executeQuery(preparedStatement, carMapper::map);
         } catch (SQLException e) {
             rollbackTransaction();

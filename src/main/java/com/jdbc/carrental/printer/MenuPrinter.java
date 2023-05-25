@@ -1,10 +1,7 @@
 package com.jdbc.carrental.printer;
 
 import com.jdbc.carrental.connection.DatabaseConnection;
-import com.jdbc.carrental.mapper.CarMapper;
-import com.jdbc.carrental.mapper.CustomerMapper;
-import com.jdbc.carrental.mapper.RentMapper;
-import com.jdbc.carrental.mapper.ReservationMapper;
+import com.jdbc.carrental.mapper.*;
 import com.jdbc.carrental.model.Customer;
 import com.jdbc.carrental.repository.*;
 
@@ -19,6 +16,7 @@ public class MenuPrinter {
     private final RentRepository rentRepository;
     private final ReservationRepository reservationRepository;
     private final CarRepository carRepository;
+    private final CarReservationRepository carReservationRepository;
     private int currentUserId;
 
     public MenuPrinter(DatabaseConnection databaseConnection) {
@@ -26,6 +24,7 @@ public class MenuPrinter {
         this.rentRepository = new RentRepository(databaseConnection, new RentMapper());
         this.reservationRepository = new ReservationRepository(databaseConnection, new ReservationMapper());
         this.carRepository = new CarRepository(databaseConnection, new CarMapper());
+        this.carReservationRepository = new CarReservationRepository(databaseConnection, new CarReservationMapper());
     }
 
     public void start() {
@@ -92,6 +91,7 @@ public class MenuPrinter {
                                 "1. Rent car%n" +
                                 "2. Reserve car%n" +
                                 "3. Car list%n" +
+                                "4. Car Reservation list%n" +
                                 "0. Log out%n" +
                                 "Enter your choice (1-5): ");
                 option = scanner.nextInt();
@@ -107,6 +107,7 @@ public class MenuPrinter {
                         handle("Reservation", reservationRepository);
                     }
                     case 3 -> TablePrinter.printTable("Cars", carRepository.getAll());
+                    case 4 -> handle("Car Reservation list", carReservationRepository);
                     case 0 -> start();
                     default -> System.out.println("Invalid option. Please try again.");
                 }
@@ -174,6 +175,7 @@ public class MenuPrinter {
                 switch (option) {
                     case 1 -> {
                         TablePrinter.printTable("Cars", carRepository.getAll());
+                        TablePrinter.printTable("Your " + title, repository.getAll(currentUserId));
                         int id = repository.getId(scanner);
                         if (id != 0) {
                             Optional<T> value = repository.askInsert(currentUserId, scanner);
