@@ -1,7 +1,6 @@
 -- Create tables
-CREATE SCHEMA toko7940
 
-CREATE TABLE IF NOT EXISTS toko7940.Customer
+CREATE TABLE IF NOT EXISTS Customer
 (
     customer_id SERIAL PRIMARY KEY,
     name        VARCHAR(50) DEFAULT 'Unknown',
@@ -11,7 +10,7 @@ CREATE TABLE IF NOT EXISTS toko7940.Customer
             CHECK (phone SIMILAR TO '(86|\+3706)\d{3}\d{4}' )
 );
 
-CREATE TABLE IF NOT EXISTS toko7940.Car
+CREATE TABLE IF NOT EXISTS Car
 (
     car_id       SERIAL PRIMARY KEY,
     manufacturer VARCHAR(50)    DEFAULT 'Unknown',
@@ -21,7 +20,7 @@ CREATE TABLE IF NOT EXISTS toko7940.Car
     daily_rate   DECIMAL(10, 2) DEFAULT 50.00
 );
 
-CREATE TABLE IF NOT EXISTS toko7940.Rent
+CREATE TABLE IF NOT EXISTS Rent
 (
     rent_id     SERIAL PRIMARY KEY,
     car_id      INT NOT NULL,
@@ -34,13 +33,13 @@ CREATE TABLE IF NOT EXISTS toko7940.Rent
 
     CONSTRAINT rent_car_id_fkey
         FOREIGN KEY (car_id)
-            REFERENCES toko7940.Car (car_id) ON DELETE CASCADE,
+            REFERENCES Car (car_id) ON DELETE CASCADE,
     CONSTRAINT rent_customer_id_fkey
         FOREIGN KEY (customer_id)
-            REFERENCES toko7940.Customer (customer_id) ON DELETE CASCADE
+            REFERENCES Customer (customer_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS toko7940.Reservation
+CREATE TABLE IF NOT EXISTS Reservation
 (
     reservation_id   SERIAL PRIMARY KEY,
     car_id           INT NOT NULL,
@@ -51,53 +50,53 @@ CREATE TABLE IF NOT EXISTS toko7940.Reservation
 
     CONSTRAINT reservation_car_id_fkey
         FOREIGN KEY (car_id)
-            REFERENCES toko7940.Car (car_id) ON DELETE CASCADE,
+            REFERENCES Car (car_id) ON DELETE CASCADE,
     CONSTRAINT reservation_customer_id_fkey
         FOREIGN KEY (customer_id)
-            REFERENCES toko7940.Customer (customer_id) ON DELETE CASCADE
+            REFERENCES Customer (customer_id) ON DELETE CASCADE
 );
 
 -- Create indexes
-CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_email ON toko7940.Customer (email);
-CREATE INDEX IF NOT EXISTS idx_rent_date ON toko7940.Rent (rent_date);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_email ON Customer (email);
+CREATE INDEX IF NOT EXISTS idx_rent_date ON Rent (rent_date);
 
 -- Create views
-CREATE OR REPLACE VIEW toko7940.customer_rentals AS
-SELECT toko7940.Customer.name,
-       toko7940.Customer.email,
-       toko7940.Rent.rent_date,
-       toko7940.Rent.return_date
-FROM toko7940.Customer
-         JOIN toko7940.Rent ON toko7940.Customer.customer_id = toko7940.Rent.customer_id;
+CREATE OR REPLACE VIEW customer_rentals AS
+SELECT Customer.name,
+       Customer.email,
+       Rent.rent_date,
+       Rent.return_date
+FROM Customer
+         JOIN Rent ON Customer.customer_id = Rent.customer_id;
 
-CREATE OR REPLACE VIEW toko7940.car_reservations AS
-SELECT toko7940.Car.manufacturer,
-       toko7940.Car.model,
-       toko7940.Customer.name,
-       toko7940.Reservation.reservation_date,
-       toko7940.Reservation.expiration_date
-FROM toko7940.Car
-         JOIN toko7940.Reservation ON toko7940.Car.car_id = toko7940.Reservation.car_id
-         JOIN toko7940.Customer ON toko7940.Customer.customer_id = toko7940.Reservation.customer_id;
+CREATE OR REPLACE VIEW car_reservations AS
+SELECT Car.manufacturer,
+       Car.model,
+       Customer.name,
+       Reservation.reservation_date,
+       Reservation.expiration_date
+FROM Car
+         JOIN Reservation ON Car.car_id = Reservation.car_id
+         JOIN Customer ON Customer.customer_id = Reservation.customer_id;
 
-CREATE OR REPLACE VIEW toko7940.car_rentals AS
-SELECT toko7940.Car.manufacturer,
-       toko7940.Car.model,
-       toko7940.Customer.name,
-       toko7940.Rent.rent_date,
-       toko7940.Rent.return_date
-FROM toko7940.Car
-         JOIN toko7940.Rent ON toko7940.Car.car_id = toko7940.Rent.car_id
-         JOIN toko7940.Customer ON toko7940.Customer.customer_id = toko7940.Rent.customer_id;
+CREATE OR REPLACE VIEW car_rentals AS
+SELECT Car.manufacturer,
+       Car.model,
+       Customer.name,
+       Rent.rent_date,
+       Rent.return_date
+FROM Car
+         JOIN Rent ON Car.car_id = Rent.car_id
+         JOIN Customer ON Customer.customer_id = Rent.customer_id;
 
-CREATE MATERIALIZED VIEW toko7940.car_rental_stats AS
-SELECT toko7940.Car.manufacturer,
-       toko7940.Car.model,
-       COUNT(toko7940.Rent.car_id) AS total_rentals
-FROM toko7940.Car
-         JOIN toko7940.Rent ON toko7940.Car.car_id = toko7940.Rent.car_id
-GROUP BY toko7940.Car.manufacturer, toko7940.Car.model;
---REFRESH MATERIALIZED VIEW toko7940.car_rental_stats;
+CREATE MATERIALIZED VIEW car_rental_stats AS
+SELECT Car.manufacturer,
+       Car.model,
+       COUNT(Rent.car_id) AS total_rentals
+FROM Car
+         JOIN Rent ON Car.car_id = Rent.car_id
+GROUP BY Car.manufacturer, Car.model;
+--REFRESH MATERIALIZED VIEW car_rental_stats;
 
 -- Create triggers
 CREATE OR REPLACE FUNCTION update_amount_paid()
@@ -105,14 +104,14 @@ CREATE OR REPLACE FUNCTION update_amount_paid()
 $$
 BEGIN
     NEW.amount_paid = (SELECT daily_rate
-                       FROM toko7940.Car
+                       FROM Car
                        WHERE car_id = NEW.car_id) * (NEW.return_date - NEW.rent_date);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_update_amount_paid
     BEFORE INSERT OR UPDATE
-    ON toko7940.Rent
+    ON Rent
     FOR EACH ROW
 EXECUTE FUNCTION update_amount_paid();
 
@@ -122,7 +121,7 @@ $$
 BEGIN
     IF EXISTS(
             SELECT 1
-            FROM toko7940.Reservation
+            FROM Reservation
             WHERE car_id = NEW.car_id
               AND reservation_date <= NEW.rent_date
               AND expiration_date > NEW.rent_date
@@ -135,30 +134,30 @@ END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_prevent_renting_reserved_car
     BEFORE INSERT OR UPDATE
-    ON toko7940.Rent
+    ON Rent
     FOR EACH ROW
 EXECUTE FUNCTION prevent_renting_reserved_car();
 
 -- Insert data
-INSERT INTO toko7940.Customer (name, email, phone)
+INSERT INTO Customer (name, email, phone)
 VALUES ('Tomas Kozakas', 'tomaskozakas@gmail.com', '+37067217198'),
        ('Oskar Krasev', 'oskarkrasev@gmail.com', '+37067217198'),
        ('Jane Smith', 'janesmith@gmail.com', '+37067217198'),
        ('Bob Johnson', 'bobjohnson@yahoo.com', '+37067217198'),
        ('Emily Davis', 'emilydavis@hotmail.com', '+37067217198');
 
-INSERT INTO toko7940.Car (manufacturer, model, year, daily_rate)
+INSERT INTO Car (manufacturer, model, year, daily_rate)
 VALUES ('Audi', 'A4', 2022, 75.00),
        ('BMW', 'X5', 2023, 100.00),
        ('Volkswagen', 'Golf', 2021, 55.00);
 
 
-INSERT INTO toko7940.Rent (car_id, customer_id, rent_date, return_date, amount_paid)
+INSERT INTO Rent (car_id, customer_id, rent_date, return_date, amount_paid)
 VALUES (1, 1, '2023-04-10', '2023-04-14', 260.00),
        (2, 3, '2023-04-12', '2023-04-16', 240.00),
        (3, 2, '2023-04-13', '2023-04-16', 255.00);
 
-INSERT INTO toko7940.Reservation (car_id, customer_id, reservation_date, expiration_date)
+INSERT INTO 1Reservation (car_id, customer_id, reservation_date, expiration_date)
 VALUES (1, 4, '2023-04-18', '2023-04-25'),
        (2, 2, '2023-04-15', '2023-04-20'),
        (3, 3, '2023-04-17', '2023-04-20');
